@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SLMG Beverages – Meeting Room Booking</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background .3s,color .3s;}
+button{font-family:inherit;cursor:pointer;}input,select,textarea{font-family:inherit;}
+
+:root{
+  --blue:#3d6ce7;--blue-d:#2c55d4;--blue-l:#eef2ff;
+  --green:#16a34a;--green-l:#dcfce7;
+  --red:#dc2626;--red-l:#fee2e2;
+  --orange:#d97706;--orange-l:#fef3c7;
+  --purple:#7c3aed;--purple-l:#f5f3ff;
+  --gray:#64748b;--border:#e2e8f0;
+  --sidebar:#0f172a;--sw:242px;
+  --bg:#f0f2f7;--text:#1a1d2e;
+  --card:#fff;--card-border:#e2e8f0;
+  --input-bg:#fff;--input-border:#e2e8f0;
+  --topbar:#fff;--table-hover:#fafbff;
+}
+body.theme-cocacola{--blue:#cc0000;--blue-d:#a30000;--blue-l:#fff0f0;--sidebar:#1a0000;--bg:#f7f0f0;--border:#f5c6c6;}
+body.theme-cocacola .btn-blue{background:#cc0000;} body.theme-cocacola .btn-blue:hover{background:#a30000;}
+body.theme-cocacola .nb.active{background:#cc0000;} body.theme-cocacola .sb-icon,.theme-cocacola .llogo,.theme-cocacola .av{background:#cc0000;}
+body.theme-cocacola .inp:focus,.theme-cocacola .sel:focus,.theme-cocacola .ta:focus{border-color:#cc0000;box-shadow:0 0 0 3px rgba(204,0,0,.1);}
+body.theme-dark{--bg:#0f172a;--text:#e2e8f0;--card:#1e293b;--card-border:#334155;--border:#334155;--input-bg:#1e293b;--input-border:#475569;--topbar:#1e293b;--sidebar:#0a0f1e;--table-hover:#263047;--gray:#94a3b8;}
+body.theme-dark .card,.theme-dark .lcard{background:var(--card);border-color:var(--card-border);}
+body.theme-dark .inp,.theme-dark .sel,.theme-dark .ta{background:var(--input-bg);border-color:var(--input-border);color:var(--text);}
+body.theme-dark .topbar{background:var(--topbar);border-color:var(--card-border);}
+body.theme-dark th{background:#263047;color:#94a3b8;}
+body.theme-dark tbody tr:hover{background:#263047;}
+body.theme-dark .al-i{background:#1e3a5f;border-color:#2563eb;color:#93c5fd;}
+body.theme-dark .al-w{background:#3d2c0a;border-color:#d97706;color:#fcd34d;}
+body.theme-dark .al-e{background:#3d0f0f;border-color:#dc2626;color:#fca5a5;}
+body.theme-dark .al-s{background:#0f2d1f;border-color:#16a34a;color:#86efac;}
+body.theme-dark .ddm{background:#1e293b;border-color:#334155;}
+body.theme-dark .ddi:hover{background:#263047;}
+body.theme-dark .ddi{color:var(--text);}
+body.theme-dark .mb{background:#1e293b;}
+body.theme-dark .mh,.theme-dark .mf{border-color:#334155;}
+body.theme-dark .tst{background:#1e293b;color:var(--text);}
+body.theme-dark .btn-gray{background:#263047;color:#94a3b8;border-color:#334155;}
+body.theme-green{--blue:#059669;--blue-d:#047857;--blue-l:#ecfdf5;--sidebar:#052e16;}
+body.theme-green .btn-blue{background:#059669;} body.theme-green .btn-blue:hover{background:#047857;}
+body.theme-green .nb.active,.theme-green .sb-icon,.theme-green .llogo,.theme-green .av{background:#059669;}
+
+#LP{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f172a 0%,#1e3a6e 50%,#0f172a 100%);padding:16px;}
+body.theme-cocacola #LP{background:linear-gradient(135deg,#1a0000 0%,#8b0000 50%,#1a0000 100%);}
+body.theme-dark #LP{background:linear-gradient(135deg,#020617 0%,#0f172a 50%,#020617 100%);}
+body.theme-green #LP{background:linear-gradient(135deg,#052e16 0%,#14532d 50%,#052e16 100%);}
+.lcard{background:#fff;border-radius:16px;padding:36px;width:100%;max-width:420px;}
+.llogo{width:52px;height:52px;background:var(--blue);border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.3rem;margin:0 auto 14px;}
+
+#AP{display:none;min-height:100vh;}
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--sidebar);overflow-y:auto;z-index:200;display:flex;flex-direction:column;transition:transform .3s;}
+.sb-logo{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;}
+.sb-icon{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.85rem;flex-shrink:0;}
+.ns-lbl{padding:16px 16px 4px;font-size:.6rem;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.nb{display:flex;align-items:center;gap:9px;padding:8px 12px;margin:1px 8px;border-radius:7px;color:rgba(255,255,255,.55);font-size:.8rem;font-weight:500;background:none;border:none;width:calc(100% - 16px);text-align:left;cursor:pointer;transition:all .15s;}
+.nb:hover{background:rgba(255,255,255,.07);color:#fff;}
+.nb.active{background:var(--blue);color:#fff;}
+.nb .ni{width:14px;text-align:center;flex-shrink:0;}
+.nb .nc{margin-left:auto;background:#d97706;color:#fff;font-size:.58rem;font-weight:700;padding:2px 5px;border-radius:9px;}
+.sb-usr{margin-top:auto;padding:12px;border-top:1px solid rgba(255,255,255,.07);}
+.sb-ui{background:rgba(255,255,255,.05);border-radius:8px;padding:9px 11px;display:flex;align-items:center;gap:8px;}
+.av{border-radius:7px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;}
+.main{margin-left:var(--sw);min-height:100vh;display:flex;flex-direction:column;}
+.topbar{background:var(--topbar);border-bottom:1px solid var(--border);height:58px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.pc{padding:22px;flex:1;}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap;}
+.card{background:var(--card);border:1px solid var(--card-border,var(--border));border-radius:12px;}
+.cb{padding:18px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:.78rem;font-weight:600;border:none;cursor:pointer;transition:all .15s;line-height:1.3;}
+.btn-blue{background:var(--blue);color:#fff;} .btn-blue:hover{background:var(--blue-d);}
+.btn-grn{background:var(--green-l);color:var(--green);border:1px solid #bbf7d0;} .btn-grn:hover{background:#bbf7d0;}
+.btn-red{background:var(--red-l);color:var(--red);border:1px solid #fecaca;} .btn-red:hover{background:#fecaca;}
+.btn-gray{background:#f8fafc;color:var(--gray);border:1px solid var(--border);} .btn-gray:hover{background:var(--border);}
+.btn-sm{padding:5px 10px;font-size:.72rem;} .btn-lg{padding:10px 20px;font-size:.85rem;}
+.fg{margin-bottom:13px;}
+.lbl{display:block;font-size:.72rem;font-weight:600;margin-bottom:4px;color:#374151;}
+body.theme-dark .lbl{color:#94a3b8;}
+.inp,.sel,.ta{width:100%;padding:8px 11px;border:1.5px solid var(--input-border,var(--border));border-radius:8px;font-size:.82rem;background:var(--input-bg,#fff);transition:border-color .15s;color:var(--text);}
+.inp:focus,.sel:focus,.ta:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(61,108,231,.1);}
+.ta{resize:vertical;min-height:70px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{padding:9px 12px;text-align:left;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);background:#f8fafc;border-bottom:1.5px solid var(--border);}
+body.theme-dark th{background:#263047;}
+td{padding:10px 12px;font-size:.78rem;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--table-hover,#fafbff);}
+.bdg{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:.65rem;font-weight:700;white-space:nowrap;}
+.ba{background:var(--green-l);color:var(--green);} .bp{background:var(--orange-l);color:var(--orange);}
+.br{background:var(--red-l);color:var(--red);} .bc{background:#f1f5f9;color:#64748b;}
+.bi{background:#eff6ff;color:#1d4ed8;} .be{background:var(--purple-l);color:var(--purple);}
+.badm{background:var(--purple-l);color:var(--purple);} .bemp{background:var(--blue-l);color:var(--blue);}
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;animation:fi .2s;}
+.mb{background:var(--card,#fff);border-radius:14px;width:100%;max-width:510px;max-height:90vh;overflow-y:auto;animation:su .2s;box-shadow:0 20px 60px rgba(0,0,0,.18);}
+.mh{padding:15px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.mh h3{font-size:.88rem;font-weight:700;}
+.mbdy{padding:18px;} .mf{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:7px;justify-content:flex-end;}
+@keyframes fi{from{opacity:0}to{opacity:1}} @keyframes su{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+#TA{position:fixed;top:13px;right:13px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none;}
+.tst{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--card,#fff);border-radius:9px;box-shadow:0 4px 18px rgba(0,0,0,.11);border-left:4px solid;font-size:.78rem;font-weight:500;min-width:220px;pointer-events:all;animation:slr .22s;}
+@keyframes slr{from{transform:translateX(80px);opacity:0}to{transform:translateX(0);opacity:1}}
+.al{padding:9px 12px;border-radius:8px;font-size:.76rem;font-weight:500;display:flex;align-items:flex-start;gap:7px;margin-bottom:12px;}
+.al-i{background:var(--blue-l);color:#1e40af;border:1px solid #bfdbfe;}
+.al-w{background:var(--orange-l);color:#92400e;border:1px solid #fde68a;}
+.al-e{background:var(--red-l);color:#991b1b;border:1px solid #fecaca;}
+.al-s{background:var(--green-l);color:#14532d;border:1px solid #bbf7d0;}
+.empty{text-align:center;padding:40px 16px;color:var(--gray);}
+.empty i{font-size:1.8rem;display:block;margin-bottom:8px;opacity:.25;}
+.chip{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.65rem;font-weight:600;margin:2px;}
+.sf{display:inline-block;padding:3px 7px;border-radius:5px;font-size:.66rem;font-weight:600;background:var(--green-l);color:var(--green);border:1px solid #bbf7d0;margin:2px;cursor:pointer;}
+.sb2{display:inline-block;padding:3px 7px;border-radius:5px;font-size:.66rem;font-weight:600;background:var(--red-l);color:var(--red);border:1px solid #fecaca;margin:2px;}
+.ddm{position:absolute;top:calc(100% + 5px);right:0;background:var(--card,#fff);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);min-width:170px;padding:4px;z-index:300;display:none;}
+.ddi{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:6px;font-size:.77rem;font-weight:500;background:none;border:none;width:100%;text-align:left;cursor:pointer;color:var(--text);transition:background .1s;}
+.ddi:hover{background:#f8fafc;} .ddi i{width:13px;text-align:center;color:var(--gray);}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.ch{padding:7px 4px;text-align:center;font-size:.65rem;font-weight:700;color:var(--gray);background:#f8fafc;border-bottom:1px solid var(--border);}
+body.theme-dark .ch{background:#263047;}
+.cc{min-height:78px;padding:5px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
+.cc:hover{background:#f8faff;} .cc.ct{background:#eef2ff;} .cc.co{background:#fafafa;opacity:.5;}
+body.theme-dark .cc:hover{background:#263047;} body.theme-dark .cc.ct{background:#1e3a5f;}
+.cc:nth-child(7n){border-right:none;}
+.cdot{font-size:.61rem;padding:2px 4px;border-radius:4px;margin-top:2px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.theme-card{border:2px solid var(--border);border-radius:10px;padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;background:var(--card);}
+.theme-card:hover,.theme-card.active{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-l);}
+.theme-swatch{width:28px;height:28px;border-radius:7px;flex-shrink:0;}
+/* Loading spinner */
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}.main{margin-left:0;}.row2{grid-template-columns:1fr;}#mnuBtn{display:flex!important;}}
+@media(max-width:880px){.g2c{grid-template-columns:1fr!important;}}
+@media print{.sidebar,.topbar,.np{display:none!important;}.main{margin-left:0!important;}}
+</style>
+</head>
+<body>
+<div id="TA"></div>
+<div id="LP">
+  <div class="lcard">
+    <div style="text-align:center;margin-bottom:28px;">
+      <div style="background:#fff;border-radius:14px;padding:18px 28px;display:inline-block;margin-bottom:18px;box-shadow:0 4px 24px rgba(0,0,0,.18);">
+        <img src="/slmg-logo.webp" alt="SLMG Beverages" style="height:80px;width:auto;display:block;"/>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,.15);padding-top:16px;">
+        <h1 style="font-size:1.35rem;font-weight:800;color:#fff;letter-spacing:-.01em;">Meeting Room Booking</h1>
+        <p style="color:rgba(255,255,255,.45);font-size:.76rem;margin-top:4px;">Sign in to your account</p>
+      </div>
+    </div>
+    <div id="lerr" class="al al-e" style="display:none;"></div>
+    <div class="fg"><label class="lbl">Email</label><input id="lem" type="email" class="inp" placeholder="you@company.com"/></div>
+    <div class="fg" style="margin-bottom:16px;">
+      <label class="lbl">Password</label>
+      <div style="position:relative;">
+        <input id="lpw" type="password" class="inp" placeholder="••••••••" style="padding-right:36px;"/>
+        <button type="button" onclick="toggleEye()" style="position:absolute;right:9px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray);font-size:.82rem;padding:3px;"><i class="fas fa-eye" id="eyeic"></i></button>
+      </div>
+    </div>
+    <button class="btn btn-blue btn-lg" style="width:100%;justify-content:center;" id="loginBtn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+  </div>
+</div>
+
+<div id="AP">
+  <div class="sidebar" id="SB">
+    <div class="sb-logo" style="padding:12px 14px;">
+      <img src="/slmg-logo.webp" alt="SLMG Beverages" style="width:100%;max-width:160px;height:auto;display:block;filter:brightness(0) invert(1);object-fit:contain;"/>
+    </div>
+    <nav id="SN" style="padding:6px 0;flex:1;"></nav>
+    <div class="sb-usr" id="SU"></div>
+  </div>
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button id="mnuBtn" class="btn btn-gray btn-sm" style="display:none;" onclick="document.getElementById('SB').classList.toggle('open')"><i class="fas fa-bars"></i></button>
+        <div><div id="ttl" style="font-weight:700;font-size:.92rem;"></div><div id="tsub" style="font-size:.66rem;color:var(--gray);"></div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div style="position:relative;">
+          <button class="btn btn-gray btn-sm" onclick="showNotifs()"><i class="fas fa-bell"></i></button>
+          <span id="ndot" style="position:absolute;top:3px;right:3px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid #fff;display:none;"></span>
+        </div>
+        <div style="position:relative;" id="pdw">
+          <button class="btn btn-gray btn-sm" onclick="toggleDrop()">
+            <div class="av" id="tav" style="width:24px;height:24px;font-size:.72rem;"></div>
+            <span id="tnm" style="font-size:.74rem;font-weight:600;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+            <i class="fas fa-chevron-down" style="font-size:.55rem;color:var(--gray);"></i>
+          </button>
+          <div class="ddm" id="pdrop">
+            <button class="ddi" onclick="closeDrop();showProf()"><i class="fas fa-user"></i>My Profile</button>
+            <button class="ddi" onclick="closeDrop();nav('mybookings')"><i class="fas fa-calendar-check"></i>My Bookings</button>
+            <button class="ddi" onclick="closeDrop();showChPwd()"><i class="fas fa-key"></i>Change Password</button>
+            <button class="ddi" onclick="closeDrop();editSelfProfile()"><i class="fas fa-edit"></i>Edit Profile</button>
+            <hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">
+            <button class="ddi" style="color:var(--red);" onclick="doLogout()"><i class="fas fa-sign-out-alt" style="color:var(--red);"></i>Sign Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pc" id="MC"></div>
+  </div>
+</div>
+
+<script>
+// ── API CLIENT ─────────────────────────────────────────────────────────────
+const API = {
+  base: '/api',
+  token: () => localStorage.getItem('mrb_token'),
+
+  async req(method, path, body) {
+    const opts = {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+    };
+    const t = this.token();
+    if (t) opts.headers['Authorization'] = 'Bearer ' + t;
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(this.base + path, opts);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Request failed');
+    return data;
+  },
+
+  get:    (p)    => API.req('GET',    p),
+  post:   (p, b) => API.req('POST',   p, b),
+  patch:  (p, b) => API.req('PATCH',  p, b),
+  put:    (p, b) => API.req('PUT',    p, b),
+  delete: (p)    => API.req('DELETE', p),
+};
+
+// ── UTILS ──────────────────────────────────────────────────────────────────
+const E = s => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fd = d => { if (!d) return '—'; return new Date(d + 'T00:00:00').toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); };
+const ft = t => { if (!t) return ''; const [h, m] = t.split(':'); const hh = +h, a = hh >= 12 ? 'PM' : 'AM'; return (hh % 12 || 12) + ':' + m + ' ' + a; };
+const t2m = t => { const [h, m] = (t || '0:0').split(':'); return +h * 60 + +m; };
+const m2t = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+const dur = (s, e) => { const d = t2m(e) - t2m(s), h = Math.floor(d / 60), m = d % 60; return h > 0 ? (m > 0 ? h + 'h ' + m + 'm' : h + 'h') : m + 'm'; };
+const td = () => new Date().toISOString().split('T')[0];
+
+function toast(msg, type) {
+  const c = { success: '#16a34a', error: '#dc2626', warning: '#d97706', info: '#3d6ce7' };
+  const k = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+  const t = type || 'info', el = document.createElement('div');
+  el.className = 'tst'; el.style.borderLeftColor = c[t];
+  el.innerHTML = `<i class="fas ${k[t]}" style="color:${c[t]};font-size:.88rem;flex-shrink:0;"></i><span>${E(msg)}</span>`;
+  document.getElementById('TA').appendChild(el);
+  setTimeout(() => { el.style.cssText = 'opacity:0;transform:translateX(60px);transition:all .25s;'; setTimeout(() => el.remove(), 250); }, 3000);
+}
+
+// ── THEME ──────────────────────────────────────────────────────────────────
+const THEMES = {
+  default:  { label: 'Default Blue',    swatch: '#3d6ce7' },
+  cocacola: { label: 'Coca-Cola Red',   swatch: '#cc0000' },
+  dark:     { label: 'Dark Mode',       swatch: '#1e293b' },
+  green:    { label: 'Emerald Green',   swatch: '#059669' },
+};
+
+function applyTheme(t) {
+  document.body.className = t && t !== 'default' ? 'theme-' + t : '';
+  localStorage.setItem('mrb_theme', t || 'default');
+}
+
+// ── AUTH STATE ─────────────────────────────────────────────────────────────
+let CU = null; // current user
+
+function setUser(user, token) {
+  CU = user;
+  if (token) localStorage.setItem('mrb_token', token);
+  localStorage.setItem('mrb_user', JSON.stringify(user));
+}
+
+function clearUser() {
+  CU = null;
+  localStorage.removeItem('mrb_token');
+  localStorage.removeItem('mrb_user');
+}
+
+// ── EMAILJS ENGINE ─────────────────────────────────────────────────────────
+// EmailJS sends emails directly from the browser — no SMTP server needed.
+// Admin sets Service ID, Template ID, Public Key in Email Settings page.
+// All values are stored in backend DB and loaded on startup.
+
+let _EJS = { sid: '', tid: '', pk: '', adminEmail: '', ready: false };
+
+async function loadEmailConfig() {
+  if (!CU || CU.role !== 'admin') return; // only admins can read settings
+  try {
+    const cfg = await API.get('/settings');
+    if (cfg.ejs_sid && cfg.ejs_tid && cfg.ejs_pk) {
+      _EJS.sid = cfg.ejs_sid;
+      _EJS.tid = cfg.ejs_tid;
+      _EJS.pk  = cfg.ejs_pk;
+      _EJS.adminEmail = cfg.ejs_admin_email || '';
+      _EJS.ready = true;
+      if (window.emailjs) emailjs.init(_EJS.pk);
+      console.log('✅ EmailJS loaded');
+    }
+  } catch(e) { /* silently ignore */ }
+}
+
+async function ejsSend(params) {
+  if (!_EJS.ready || !window.emailjs) return;
+  try {
+    await emailjs.send(_EJS.sid, _EJS.tid, params);
+    console.log('[EMAIL ✅]', params.subject || params.status);
+  } catch(e) {
+    console.warn('[EMAIL ❌]', e);
+  }
+}
+
+// Helper: fire email for a booking event
+function emailBookingEvent(booking, status, extraParams = {}) {
+  if (!_EJS.ready) return;
+  const toEmail = extraParams.to || _EJS.adminEmail;
+  if (!toEmail) return;
+  ejsSend({
+    to_email:     toEmail,
+    to_name:      extraParams.toName || booking.user_name || '',
+    booked_by:    booking.user_name  || '',
+    room_name:    booking.room_name  || '',
+    room_floor:   booking.room_floor || '',
+    meeting_date: booking.date       || '',
+    start_time:   booking.start_time || '',
+    end_time:     booking.end_time   || '',
+    meeting_type: booking.meeting_type || '',
+    purpose:      booking.purpose    || '',
+    food:         booking.food ? 'Yes – ' + (booking.veg_nonveg || '') : 'No',
+    status:       status,
+    remarks:      booking.remarks    || '',
+    rejection_reason: booking.rejection_reason || '',
+    app_url:      window.location.origin,
+    ...extraParams,
+  });
+}
+
+// Specific triggers called at each event
+function emailOnNewBooking(booking) {
+  // Notify admin
+  if (_EJS.adminEmail) emailBookingEvent(booking, 'New Booking Request', { to: _EJS.adminEmail, subject: `New Booking – ${booking.room_name}` });
+}
+function emailOnApproved(booking) {
+  // Notify the user who booked
+  emailBookingEvent(booking, '✅ Approved', { to: booking.user_email, toName: booking.user_name, subject: `Booking Approved – ${booking.room_name}` });
+}
+function emailOnRejected(booking) {
+  emailBookingEvent(booking, '❌ Not Approved', { to: booking.user_email, toName: booking.user_name, subject: `Booking Rejected – ${booking.room_name}` });
+}
+function emailOnCancelled(booking) {
+  if (_EJS.adminEmail) emailBookingEvent(booking, '🚫 Cancelled', { to: _EJS.adminEmail, subject: `Booking Cancelled – ${booking.room_name}` });
+}
+
+
+// Simple cache to avoid re-fetching rooms/users on every page
+const Cache = { rooms: null, users: null };
+async function getRooms() { if (!Cache.rooms) Cache.rooms = await API.get('/rooms'); return Cache.rooms; }
+async function getUsers() { if (!Cache.users) Cache.users = await API.get('/users'); return Cache.users; }
+function bustCache() { Cache.rooms = null; Cache.users = null; }
+
+// ── NAV ────────────────────────────────────────────────────────────────────
+let VIEW = '', CY, CM;
+
+async function nav(v) {
+  VIEW = v;
+  document.querySelectorAll('.nb').forEach(b => b.classList.toggle('active', b.dataset.v === v));
+  const titles = { dashboard: 'Dashboard', newbooking: 'New Booking', calendar: 'Calendar', timeline: 'Timeline', mybookings: 'My Bookings', approvals: 'Approval Center', rooms: 'Room Control', users: 'User Management', allbookings: 'All Bookings', analytics: 'Analytics', export: 'Export & Reports', theme: 'Appearance', emailsettings: 'Email Settings', emaillog: 'Email Log', waitlist: 'My Waitlist', amenities: 'Amenity Requests', integrations: 'Integrations' };
+  document.getElementById('ttl').textContent = titles[v] || v;
+  document.getElementById('tsub').textContent = CU.name + ' · ' + new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+  if (window.innerWidth < 768) document.getElementById('SB').classList.remove('open');
+  document.getElementById('MC').innerHTML = '<div style="padding:32px;text-align:center;color:var(--gray);"><div class="spin" style="border-top-color:var(--blue);border-color:var(--border);margin:0 auto;width:28px;height:28px;"></div></div>';
+  const fns = { dashboard: pgDash, newbooking: pgNew, calendar: pgCal, timeline: pgTL, mybookings: pgMine, approvals: pgApprove, rooms: pgRooms, users: pgUsers, allbookings: pgAllBk, analytics: pgAn, export: pgEx, theme: pgTheme, emailsettings: pgEmailSettings, emaillog: pgEmailLog, waitlist: pgWaitlist, amenities: pgAmenities, integrations: pgIntegrations };
+  if (fns[v]) fns[v]();
+}
+
+async function renderNav() {
+  let pending = 0, pendingAmenity = 0;
+  if (isAdm()) {
+    try { const r = await API.get('/bookings/pending-count'); pending = r.count; } catch {}
+    try { const r = await API.get('/amenities/pending-count'); pendingAmenity = r.count; } catch {}
+  }
+  const main = [
+    { i:'fa-home',        l:'Dashboard',    v:'dashboard' },
+    { i:'fa-plus',        l:'New Booking',  v:'newbooking' },
+    { i:'fa-calendar',    l:'Calendar',     v:'calendar' },
+    { i:'fa-clock',       l:'Timeline',     v:'timeline' },
+    { i:'fa-list-alt',    l:'My Bookings',  v:'mybookings' },
+    { i:'fa-clock-rotate-left', l:'Waitlist', v:'waitlist' },
+    { i:'fa-tools',       l:'Amenities',    v:'amenities' },
+  ];
+  const adminNav = isAdm() ? [
+    { i:'fa-check-circle',l:'Approvals',    v:'approvals',  n:pending },
+    { i:'fa-wrench',      l:'Amenity Req.', v:'amenities',  n:pendingAmenity },
+    { i:'fa-door-open',   l:'Room Control', v:'rooms' },
+    { i:'fa-users',       l:'Users',        v:'users' },
+    { i:'fa-table',       l:'All Bookings', v:'allbookings' },
+    { i:'fa-chart-bar',   l:'Analytics',    v:'analytics' },
+    { i:'fa-download',    l:'Export',       v:'export' },
+  ] : [];
+  let h = '<div class="ns-lbl">Main</div>' + main.map(nbHtml).join('');
+  if (adminNav.length) h += '<div class="ns-lbl">Admin</div>' + adminNav.map(nbHtml).join('');
+  h += '<div class="ns-lbl">Settings</div>';
+  h += nbHtml({ i:'fa-palette',   l:'Appearance',     v:'theme' });
+  if (isAdm()) {
+    h += nbHtml({ i:'fa-plug',     l:'Integrations',   v:'integrations' });
+    h += nbHtml({ i:'fa-envelope', l:'Email Settings', v:'emailsettings' });
+    h += nbHtml({ i:'fa-history',  l:'Email Log',      v:'emaillog' });
+  }
+  document.getElementById('SN').innerHTML = h;
+}
+
+function nbHtml(it) {
+  return `<button class="nb" data-v="${it.v}" onclick="nav('${it.v}')"><span class="ni"><i class="fas ${it.i}"></i></span><span>${it.l}</span>${it.n > 0 ? `<span class="nc">${it.n}</span>` : ''}</button>`;
+}
+
+function updSU() {
+  document.getElementById('SU').innerHTML = `<div class="sb-ui"><div class="av" style="width:30px;height:30px;font-size:.78rem;">${E(CU.name[0].toUpperCase())}</div><div style="overflow:hidden;"><div style="font-size:.76rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${E(CU.name)}</div><div style="font-size:.62rem;color:rgba(255,255,255,.35);">${CU.role}</div></div></div>`;
+}
+
+function updTop() {
+  document.getElementById('tav').textContent = CU.name[0].toUpperCase();
+  document.getElementById('tnm').textContent = CU.name;
+}
+
+async function updND() {
+  if (!CU) return;
+  try {
+    const r = await API.get('/notifications');
+    document.getElementById('ndot').style.display = r.unread_count > 0 ? 'block' : 'none';
+  } catch {}
+}
+
+function isAdm() { return CU && CU.role === 'admin'; }
+
+// ── LOGIN / LOGOUT ─────────────────────────────────────────────────────────
+function toggleEye() { const i = document.getElementById('lpw'), ic = document.getElementById('eyeic'); if (i.type === 'password') { i.type = 'text'; ic.className = 'fas fa-eye-slash'; } else { i.type = 'password'; ic.className = 'fas fa-eye'; } }
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && document.getElementById('LP').style.display !== 'none') doLogin(); });
+
+async function doLogin() {
+  const em = document.getElementById('lem').value.trim(), pw = document.getElementById('lpw').value, er = document.getElementById('lerr'), btn = document.getElementById('loginBtn');
+  er.style.display = 'none';
+  if (!em || !pw) { setLE('Please enter email and password.'); return; }
+  btn.innerHTML = '<div class="spin"></div> Signing in...'; btn.disabled = true;
+  try {
+    const r = await API.post('/auth/login', { email: em, password: pw });
+    setUser(r.user, r.token);
+    document.getElementById('LP').style.display = 'none';
+    document.getElementById('AP').style.display = 'block';
+    await renderNav(); updTop(); updSU(); nav('dashboard'); updND();
+    if (r.user.role === 'admin') loadEmailConfig();
+    toast('Welcome back, ' + CU.name + '!', 'success');
+  } catch (err) {
+    setLE(err.message);
+  } finally {
+    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In'; btn.disabled = false;
+  }
+}
+
+function setLE(m) { const e = document.getElementById('lerr'); e.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${E(m)}`; e.style.display = 'flex'; }
+
+function doLogout() {
+  clearUser(); bustCache(); closeDrop();
+  document.getElementById('AP').style.display = 'none';
+  document.getElementById('LP').style.display = 'flex';
+  document.getElementById('lem').value = '';
+  document.getElementById('lpw').value = '';
+  document.getElementById('lerr').style.display = 'none';
+  toast('Signed out.', 'info');
+}
+
+// ── DROPDOWN & MODAL ───────────────────────────────────────────────────────
+function toggleDrop() { const d = document.getElementById('pdrop'); d.style.display = d.style.display === 'block' ? 'none' : 'block'; }
+function closeDrop() { document.getElementById('pdrop').style.display = 'none'; }
+document.addEventListener('click', e => { if (!document.getElementById('pdw').contains(e.target)) closeDrop(); });
+
+function modal(title, body, btns) {
+  closeModal();
+  btns = btns || [{ l: 'Close', c: 'btn-gray', f: closeModal }];
+  const bh = btns.map((b, i) => `<button class="btn ${b.c}" id="mb${i}">${b.l}</button>`).join('');
+  const el = document.createElement('div'); el.className = 'ov'; el.id = 'MOV';
+  el.innerHTML = `<div class="mb"><div class="mh"><h3>${E(title)}</h3><button onclick="closeModal()" style="background:none;border:none;color:var(--gray);cursor:pointer;font-size:.9rem;padding:4px 6px;border-radius:5px;"><i class="fas fa-times"></i></button></div><div class="mbdy">${body}</div><div class="mf">${bh}</div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click', e => { if (e.target === el) closeModal(); });
+  btns.forEach((b, i) => { const btn = document.getElementById('mb' + i); if (btn && typeof b.f === 'function') btn.onclick = b.f; });
+}
+function closeModal() { const e = document.getElementById('MOV'); if (e) e.remove(); }
+function mErr(id, m) { const e = document.getElementById(id); if (e) e.innerHTML = `<div class="al al-e"><i class="fas fa-exclamation-circle"></i>${E(m)}</div>`; }
+
+// ── PROFILE ────────────────────────────────────────────────────────────────
+async function showProf() {
+  let bkCount = 0, apprCount = 0;
+  try { const bks = await API.get('/bookings'); bkCount = bks.length; apprCount = bks.filter(b => b.status === 'approved').length; } catch {}
+  modal('My Profile', `<div style="text-align:center;padding-bottom:13px;border-bottom:1px solid var(--border);margin-bottom:13px;"><div class="av" style="width:56px;height:56px;border-radius:12px;font-size:1.5rem;font-weight:800;margin:0 auto 10px;">${E(CU.name[0].toUpperCase())}</div><div style="font-weight:700;font-size:.95rem;">${E(CU.name)}</div><div style="color:var(--gray);font-size:.76rem;margin-top:2px;">${E(CU.email)}</div>${CU.phone ? `<div style="color:var(--gray);font-size:.74rem;">${E(CU.phone)}</div>` : ''}${CU.dept ? `<div style="color:var(--gray);font-size:.74rem;">Dept: ${E(CU.dept)}</div>` : ''}<span class="bdg ${CU.role === 'admin' ? 'badm' : 'bemp'}" style="margin-top:6px;">${CU.role.toUpperCase()}</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><div style="background:var(--bg);border-radius:8px;padding:10px;"><div style="color:var(--gray);font-size:.62rem;font-weight:700;text-transform:uppercase;margin-bottom:2px;">Total</div><div style="font-size:1.3rem;font-weight:800;">${bkCount}</div></div><div style="background:var(--bg);border-radius:8px;padding:10px;"><div style="color:var(--gray);font-size:.62rem;font-weight:700;text-transform:uppercase;margin-bottom:2px;">Approved</div><div style="font-size:1.3rem;font-weight:800;color:var(--green);">${apprCount}</div></div></div>`,
+    [{ l: 'Edit Profile', c: 'btn-blue', f: () => { closeModal(); editSelfProfile(); } }, { l: 'Close', c: 'btn-gray', f: closeModal }]);
+}
+
+function editSelfProfile() {
+  modal('Edit My Profile', `<div id="epErr"></div><div class="fg"><label class="lbl">Full Name *</label><input id="epN" class="inp" value="${E(CU.name)}"/></div><div class="fg"><label class="lbl">Phone Number</label><input id="epPh" class="inp" placeholder="+91 98765 43210" value="${E(CU.phone || '')}"/></div><div class="fg"><label class="lbl">Department</label><input id="epDept" class="inp" placeholder="e.g. Engineering" value="${E(CU.dept || '')}"/></div><hr style="border:none;border-top:1px solid var(--border);margin:12px 0;"><div style="font-size:.72rem;color:var(--gray);">Email cannot be changed here. Contact admin.</div>`,
+    [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Save Changes', c: 'btn-blue', f: async () => {
+      const name = document.getElementById('epN').value.trim(), phone = document.getElementById('epPh').value.trim(), dept = document.getElementById('epDept').value.trim();
+      if (!name) { mErr('epErr', 'Name is required.'); return; }
+      try {
+        const updated = await API.patch('/users/' + CU.id, { name, phone, dept });
+        CU.name = updated.name; CU.phone = updated.phone; CU.dept = updated.dept;
+        localStorage.setItem('mrb_user', JSON.stringify(CU));
+        updTop(); updSU(); closeModal(); toast('Profile updated!', 'success');
+      } catch (err) { mErr('epErr', err.message); }
+    }}]);
+}
+
+function showChPwd() {
+  modal('Change Password', `<div id="cpe"></div><div class="fg"><label class="lbl">Current Password</label><input type="password" id="cp1" class="inp"/></div><div class="fg"><label class="lbl">New Password</label><input type="password" id="cp2" class="inp" placeholder="Min 6 chars"/></div><div class="fg"><label class="lbl">Confirm New</label><input type="password" id="cp3" class="inp"/></div>`,
+    [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Update', c: 'btn-blue', f: async () => {
+      const a = document.getElementById('cp1').value, b = document.getElementById('cp2').value, c = document.getElementById('cp3').value;
+      if (b !== c) { mErr('cpe', 'Passwords do not match.'); return; }
+      if (b.length < 6) { mErr('cpe', 'Minimum 6 characters.'); return; }
+      try { await API.post('/auth/change-password', { currentPassword: a, newPassword: b }); closeModal(); toast('Password updated!', 'success'); }
+      catch (err) { mErr('cpe', err.message); }
+    }}]);
+}
+
+async function showNotifs() {
+  let notifs = [], unread = 0;
+  try { const r = await API.get('/notifications'); notifs = r.notifications; unread = r.unread_count; } catch {}
+  const ic = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+  const cl = { success: 'var(--green)', error: 'var(--red)', warning: 'var(--orange)', info: 'var(--blue)' };
+  let h = '<div style="max-height:320px;overflow-y:auto;">';
+  if (!notifs.length) h += '<div class="empty"><i class="fas fa-bell"></i><p>No notifications</p></div>';
+  notifs.forEach(n => { h += `<div style="display:flex;gap:8px;padding:8px;border-radius:7px;background:${n.is_read ? 'var(--card)' : '#f8faff'};margin-bottom:3px;border-left:3px solid ${cl[n.type] || cl.info};"><i class="fas ${ic[n.type] || 'fa-info-circle'}" style="color:${cl[n.type] || cl.info};margin-top:1px;flex-shrink:0;font-size:.8rem;"></i><div><div style="font-weight:600;font-size:.76rem;">${E(n.title)}</div><div style="font-size:.7rem;color:var(--gray);margin-top:1px;">${E(n.message)}</div><div style="font-size:.63rem;color:var(--gray);margin-top:2px;">${new Date(n.created_at).toLocaleString('en-IN')}</div></div></div>`; });
+  h += '</div>';
+  modal(`Notifications (${unread} unread)`, h, [{ l: 'Mark All Read', c: 'btn-gray btn-sm', f: async () => { await API.patch('/notifications/mark-all-read'); closeModal(); updND(); } }, { l: 'Close', c: 'btn-blue btn-sm', f: closeModal }]);
+}
+
+// ── THEME PAGE ─────────────────────────────────────────────────────────────
+function pgTheme() {
+  VIEW = 'theme';
+  const cur = localStorage.getItem('mrb_theme') || 'default';
+  let h = '<div style="max-width:520px;"><div class="card cb"><div style="font-weight:700;font-size:.9rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:7px;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;"><i class="fas fa-palette"></i></div>Choose Theme</div><div style="display:flex;flex-direction:column;gap:9px;">';
+  Object.entries(THEMES).forEach(([k, th]) => {
+    h += `<div class="theme-card${cur === k ? ' active' : ''}" onclick="applyTheme('${k}');pgTheme();"><div class="theme-swatch" style="background:${th.swatch};"></div><div><div style="font-weight:600;font-size:.82rem;">${th.label}</div></div>${cur === k ? '<i class="fas fa-check" style="margin-left:auto;color:var(--blue);"></i>' : ''}</div>`;
+  });
+  h += '</div></div></div>';
+  document.getElementById('MC').innerHTML = h;
+}
+
+// ── EMAIL SETTINGS ─────────────────────────────────────────────────────────
+async function pgEmailSettings() {
+  VIEW = 'emailsettings';
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('active'));
+  document.getElementById('ttl').textContent = 'Email Settings';
+  let cfg = {};
+  try { cfg = await API.get('/settings'); } catch {}
+  const isOn = !!(cfg.ejs_sid && cfg.ejs_tid && cfg.ejs_pk);
+  document.getElementById('MC').innerHTML = `<div style="max-width:600px;display:flex;flex-direction:column;gap:14px;">
+    <div class="al ${isOn ? 'al-s' : 'al-w'}">
+      <i class="fas ${isOn ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+      <div><strong>${isOn ? '✅ Email notifications are active!' : '⚠️ Email not configured yet.'}</strong><br>
+      <span style="font-size:.76rem;">${isOn ? 'Emails fire on new bookings, approvals, rejections and cancellations.' : 'Follow the 3-step setup below — takes about 2 minutes, 100% free.'}</span></div>
+    </div>
+    <div class="card cb">
+      <div style="font-weight:700;font-size:.9rem;margin-bottom:14px;">📋 Setup Guide (EmailJS — free, no server needed)</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--bg);border-radius:8px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0;">1</span>
+          <div style="font-size:.79rem;">Go to <a href="https://www.emailjs.com" target="_blank" style="color:var(--blue);font-weight:700;">emailjs.com</a> → Create free account → Dashboard</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--bg);border-radius:8px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0;">2</span>
+          <div style="font-size:.79rem;"><strong>Email Services</strong> → Add New Service → connect your Gmail → copy <strong>Service ID</strong><br><strong>Email Templates</strong> → Create Template → set <code style="background:var(--card-border);padding:1px 5px;border-radius:3px;">To Email: {{to_email}}</code> → copy <strong>Template ID</strong><br><strong>Account → API Keys</strong> → copy <strong>Public Key</strong></div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--bg);border-radius:8px;">
+          <span style="background:var(--blue);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0;">3</span>
+          <div style="font-size:.79rem;">Paste all 3 keys below → Save & Activate → done!</div>
+        </div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:10px 14px;margin-top:10px;">
+        <div style="font-size:.72rem;font-weight:700;margin-bottom:6px;color:var(--gray);">Available template variables:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;">
+          ${['{{to_email}}','{{to_name}}','{{booked_by}}','{{room_name}}','{{meeting_date}}','{{start_time}}','{{end_time}}','{{meeting_type}}','{{purpose}}','{{food}}','{{status}}','{{rejection_reason}}','{{app_url}}'].map(v => '<span style="background:var(--blue-l);color:var(--blue);padding:2px 7px;border-radius:4px;font-size:.68rem;font-family:monospace;">'+v+'</span>').join('')}
+        </div>
+      </div>
+    </div>
+    <div class="card cb">
+      <div style="font-weight:700;font-size:.9rem;margin-bottom:14px;">🔑 Your EmailJS Keys</div>
+      <div id="ejsErr"></div>
+      <div class="row2">
+        <div class="fg"><label class="lbl">Service ID *</label><input id="ejsSid" class="inp" value="${E(cfg.ejs_sid||'')}" placeholder="service_xxxxxxx"/></div>
+        <div class="fg"><label class="lbl">Template ID *</label><input id="ejsTid" class="inp" value="${E(cfg.ejs_tid||'')}" placeholder="template_xxxxxxx"/></div>
+        <div class="fg"><label class="lbl">Public Key *</label><input id="ejsPk" class="inp" value="${E(cfg.ejs_pk||'')}" placeholder="xxxxxxxxxxxxxxxxxxxx"/></div>
+        <div class="fg"><label class="lbl">Admin Email (receives new booking alerts) *</label><input id="ejsAdm" class="inp" type="email" value="${E(cfg.ejs_admin_email||'')}" placeholder="abhishek.s@slmgbev.com"/></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+        <button class="btn btn-blue btn-lg" onclick="saveEmailJS()"><i class="fas fa-save"></i> Save & Activate</button>
+        <button class="btn btn-gray btn-lg" onclick="testEmailJS()" ${!isOn ? 'disabled' : ''}><i class="fas fa-paper-plane"></i> Send Test</button>
+        ${isOn ? '<button class="btn btn-red btn-sm" onclick="clearEmailJS()"><i class="fas fa-trash"></i> Remove</button>' : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+async function saveEmailJS() {
+  const sid = document.getElementById('ejsSid').value.trim();
+  const tid = document.getElementById('ejsTid').value.trim();
+  const pk  = document.getElementById('ejsPk').value.trim();
+  const adm = document.getElementById('ejsAdm').value.trim();
+  if (!sid||!tid||!pk||!adm) { mErr('ejsErr','All 4 fields required.'); return; }
+  try {
+    await API.put('/settings', { ejs_sid:sid, ejs_tid:tid, ejs_pk:pk, ejs_admin_email:adm });
+    _EJS = { sid, tid, pk, adminEmail:adm, ready:true };
+    if (window.emailjs) emailjs.init(pk);
+    toast('✅ Email activated! Test it with the button above.', 'success');
+    pgEmailSettings();
+  } catch(err) { mErr('ejsErr', err.message); }
+}
+
+async function clearEmailJS() {
+  if (!confirm('Remove email configuration?')) return;
+  await API.put('/settings', { ejs_sid:'', ejs_tid:'', ejs_pk:'', ejs_admin_email:'' });
+  _EJS = { sid:'', tid:'', pk:'', adminEmail:'', ready:false };
+  toast('Email config removed.', 'info');
+  pgEmailSettings();
+}
+
+async function testEmailJS() {
+  if (!_EJS.ready || !window.emailjs) { toast('Save your EmailJS keys first.','warning'); return; }
+  await ejsSend({
+    to_email: _EJS.adminEmail, to_name: CU.name,
+    booked_by: CU.name, room_name: 'Test Room', room_floor: '2nd Floor',
+    meeting_date: new Date().toISOString().split('T')[0],
+    start_time: '10:00', end_time: '11:00',
+    meeting_type: 'internal', purpose: '✅ EmailJS test — everything is working!',
+    food: 'No', status: 'Test Notification', remarks: '', rejection_reason: '', app_url: window.location.origin,
+  });
+  toast('Test email sent to ' + _EJS.adminEmail, 'success');
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────────────────────
+async function pgDash() {
+  try {
+    const [bks, rooms] = await Promise.all([API.get('/bookings'), getRooms()]);
+    const today = td(), now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
+    const todBk = bks.filter(b => b.date === today && !['cancelled','rejected'].includes(b.status)).sort((a,b) => a.start_time > b.start_time ? 1 : -1);
+    const upcom = bks.filter(b => b.date > today && !['cancelled','rejected'].includes(b.status)).sort((a,b) => a.date > b.date ? 1 : a.start_time > b.start_time ? 1 : -1);
+    const pend  = bks.filter(b => b.status === 'pending');
+
+    let cnt = '';
+    for (let i = 0; i < todBk.length; i++) { const sm = t2m(todBk[i].start_time); if (sm > nm) { const diff = sm - nm, dh = Math.floor(diff/60), dm = diff%60; cnt = `<div class="al al-w" style="margin-bottom:16px;"><i class="fas fa-bell"></i><div>Next meeting in <strong>${dh ? dh+'h ' : ''}${dm}m</strong>: ${E(todBk[i].purpose)} @ ${E(todBk[i].room_name)} (${ft(todBk[i].start_time)})</div></div>`; break; } }
+
+    let sh = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:11px;margin-bottom:16px;">';
+    sh += stC("Today's Meetings", todBk.length, 'fa-calendar-day', '#eff6ff', 'var(--blue)');
+    sh += stC('Upcoming', upcom.length, 'fa-arrow-right', '#f0fdf4', 'var(--green)');
+    sh += stC('Active Rooms', rooms.filter(r => !r.blocked).length, 'fa-door-open', '#faf5ff', 'var(--purple)');
+    if (isAdm()) sh += stC('Pending Approvals', pend.length, 'fa-bell', '#fef3c7', 'var(--orange)', pend.length > 0, "nav('approvals')");
+    sh += '</div>';
+
+    let rh = '<div class="card cb" style="margin-bottom:16px;"><div style="font-weight:700;font-size:.84rem;margin-bottom:10px;"><i class="fas fa-door-open" style="color:var(--blue);margin-right:6px;"></i>Room Status – Today</div><div style="display:flex;flex-wrap:wrap;gap:8px;">';
+    rooms.forEach(r => {
+      const rb = bks.filter(b => b.room_id === r.id && b.date === today && !['cancelled','rejected'].includes(b.status));
+      const busy = rb.some(b => t2m(b.start_time) <= nm && t2m(b.end_time) > nm);
+      const col = busy ? 'var(--red)' : 'var(--green)', bg = busy ? '#fef2f2' : '#f0fdf4', brd = busy ? '#fecaca' : '#bbf7d0';
+      rh += `<div style="background:${bg};border:1.5px solid ${brd};border-radius:9px;padding:8px 12px;min-width:115px;"><div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;"><div style="width:6px;height:6px;border-radius:50%;background:${col};flex-shrink:0;"></div><span style="font-weight:700;font-size:.73rem;">${E(r.name)}</span></div><div style="font-size:.66rem;color:${col};font-weight:600;">${busy ? 'In Use' : 'Available'}</div><div style="font-size:.62rem;color:var(--gray);">${rb.length} booking${rb.length !== 1 ? 's' : ''}</div>${r.blocked ? '<div style="font-size:.62rem;color:var(--red);font-weight:700;">BLOCKED</div>' : ''}</div>`;
+    });
+    rh += '</div></div>';
+
+    let g = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:13px;" class="g2c"><div class="card cb"><div style="font-weight:700;font-size:.82rem;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><span><i class="fas fa-calendar-check" style="color:var(--blue);margin-right:5px;"></i>Today's Schedule</span><button class="btn btn-blue btn-sm np" onclick="nav('newbooking')"><i class="fas fa-plus"></i></button></div>`;
+    if (!todBk.length) g += '<div class="empty" style="padding:24px;"><i class="far fa-calendar"></i><p>No meetings today</p></div>';
+    todBk.forEach(b => {
+      const live = t2m(b.start_time) <= nm && t2m(b.end_time) > nm;
+      g += `<div style="display:flex;gap:8px;padding:8px;border-radius:8px;background:${live ? '#eef2ff' : 'var(--bg)'};margin-bottom:5px;border-left:3px solid ${b.room_color || '#ccc'};"><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:.78rem;display:flex;align-items:center;gap:5px;">${E(b.room_name)}${live ? '<span style="font-size:.57rem;background:var(--blue);color:#fff;padding:1px 5px;border-radius:8px;font-weight:700;">LIVE</span>' : ''}</div><div style="font-size:.69rem;color:var(--gray);margin-top:2px;">${ft(b.start_time)} – ${ft(b.end_time)} · ${dur(b.start_time, b.end_time)}</div><div style="font-size:.72rem;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${E(b.purpose)}</div></div><span class="bdg b${b.status[0]}">${b.status.toUpperCase()}</span></div>`;
+    });
+    g += `</div><div class="card cb"><div style="font-weight:700;font-size:.82rem;margin-bottom:10px;"><i class="fas fa-arrow-right" style="color:var(--blue);margin-right:5px;"></i>Upcoming</div>`;
+    if (!upcom.length) g += '<div class="empty" style="padding:24px;"><i class="far fa-calendar-check"></i><p>No upcoming bookings</p></div>';
+    upcom.slice(0, 5).forEach(b => {
+      const bd = new Date(b.date + 'T00:00:00'), diff = Math.round((bd - new Date(today + 'T00:00:00')) / 86400000);
+      g += `<div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:var(--bg);margin-bottom:5px;"><div style="width:34px;height:34px;border-radius:8px;background:${b.room_color || '#ccc'}1a;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:.6rem;font-weight:700;color:${b.room_color || '#ccc'};">${bd.toLocaleDateString('en', { month: 'short' })}</span><span style="font-size:.88rem;font-weight:800;color:${b.room_color || '#ccc'};line-height:1;">${bd.getDate()}</span></div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:.76rem;">${E(b.room_name)}</div><div style="font-size:.68rem;color:var(--gray);">${ft(b.start_time)} · in ${diff} day${diff !== 1 ? 's' : ''}</div></div><span class="bdg b${b.status[0]}">${b.status.toUpperCase()}</span></div>`;
+    });
+    g += '</div></div>';
+    document.getElementById('MC').innerHTML = cnt + sh + rh + g;
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e"><i class="fas fa-times-circle"></i>${E(err.message)}</div>`; }
+}
+
+function stC(l, v, ic, bg, col, click, oc) {
+  return `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;justify-content:space-between;${click ? 'cursor:pointer;' : ''}" ${click ? `onclick="${oc}"` : ''}><div><div style="color:var(--gray);font-size:.7rem;font-weight:500;margin-bottom:3px;">${l}</div><div style="font-size:1.65rem;font-weight:800;line-height:1;color:${click && v > 0 ? col : 'var(--text)'};">${v}</div></div><div style="width:42px;height:42px;border-radius:9px;background:${bg};color:${col};display:flex;align-items:center;justify-content:center;font-size:1rem;"><i class="fas ${ic}"></i></div></div>`;
+}
+
+// ── NEW BOOKING ────────────────────────────────────────────────────────────
+async function pgNew() {
+  const rooms = (await getRooms()).filter(r => !r.blocked);
+  let ro = '<option value="">Select room</option>';
+  rooms.forEach(r => { ro += `<option value="${r.id}">${E(r.name)} — Cap:${r.capacity} | ${E(r.floor || '')}</option>`; });
+  let to = '<option value="">Select</option>';
+  for (let h = 9; h < 20; h++) for (let m = 0; m < 60; m += 30) { const t = m2t(h*60+m); to += `<option value="${t}">${ft(t)}</option>`; }
+  to += `<option value="20:00">${ft('20:00')}</option>`;
+
+  document.getElementById('MC').innerHTML = `<div style="max-width:640px;"><div class="card cb"><div style="display:flex;align-items:center;gap:9px;font-weight:700;font-size:.9rem;margin-bottom:16px;"><div style="width:30px;height:30px;border-radius:8px;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-plus"></i></div>Create New Booking</div><div id="bkE"></div><div class="fg"><label class="lbl">Meeting Room *</label><select id="bkR" class="sel" onchange="bkRC()">${ro}</select></div><div id="rInfo"></div><div class="row2"><div class="fg"><label class="lbl">Date *</label><input type="date" id="bkD" class="inp" min="${td()}" onchange="bkAv()"/></div><div class="fg"><label class="lbl">Meeting Type *</label><select id="bkT" class="sel" onchange="bkTC()"><option value="">Select</option><option value="internal">Internal (auto-approved)</option><option value="external">External (needs approval)</option></select></div><div class="fg"><label class="lbl">Start Time *</label><select id="bkS" class="sel" onchange="bkEO()">${to}</select></div><div class="fg"><label class="lbl">End Time *</label><select id="bkE2" class="sel"><option value="">Select end</option></select></div></div>
+  <div id="extF" style="display:none;"><hr style="border:none;border-top:1px solid var(--border);margin:12px 0;"><div class="al al-w"><i class="fas fa-info-circle"></i>External meetings require admin approval.</div><div class="row2"><div class="fg"><label class="lbl">Number of Persons *</label><input type="number" id="bkP" class="inp" min="1" placeholder="e.g. 8"/></div><div class="fg"><label class="lbl">Food Required?</label><select id="bkF" class="sel" onchange="bkFoodChange()"><option value="false">No</option><option value="true">Yes 🍽️</option></select></div></div><div id="vegBox" style="display:none;" class="fg"><label class="lbl">Food Preference *</label><div style="display:flex;gap:10px;margin-top:4px;"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;" id="vegLbl"><input type="radio" name="vegtype" value="Veg" onchange="selectVeg('Veg')" style="accent-color:var(--green);">🥦 Veg</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;" id="nonvegLbl"><input type="radio" name="vegtype" value="Non-Veg" onchange="selectVeg('Non-Veg')" style="accent-color:var(--orange);">🍗 Non-Veg</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;" id="bothLbl"><input type="radio" name="vegtype" value="Both" onchange="selectVeg('Both')" style="accent-color:var(--purple);">🍱 Both</label></div></div><div class="fg"><label class="lbl">Remarks</label><textarea id="bkRm" class="ta" placeholder="Special requirements..."></textarea></div></div>
+  <div class="fg"><label class="lbl">Purpose / Agenda *</label><textarea id="bkPu" class="ta" placeholder="Describe the meeting..."></textarea></div>
+  
+  <!-- Guest Emails -->
+  <div class="fg"><label class="lbl">Guest Emails <span style="color:var(--gray);font-weight:400;">(optional – they'll receive a calendar invite when approved)</span></label>
+    <div id="guestList" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;"></div>
+    <div style="display:flex;gap:6px;"><input id="guestInput" class="inp" type="email" placeholder="guest@company.com" style="flex:1;" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();addGuest();}"/><button type="button" class="btn btn-gray btn-sm" onclick="addGuest()"><i class="fas fa-plus"></i></button></div>
+  </div>
+
+  <!-- Recurring -->
+  <div class="fg"><label class="lbl">Repeat</label>
+    <select id="bkRec" class="sel" onchange="toggleRecurring()">
+      <option value="none">No Repeat (One-time)</option>
+      <option value="daily">Daily</option>
+      <option value="weekly">Weekly</option>
+    </select>
+  </div>
+  <div id="recurBox" style="display:none;" class="fg">
+    <label class="lbl">Repeat Until *</label>
+    <input type="date" id="bkRecEnd" class="inp" min="${td()}"/>
+    <div class="al al-i" style="margin-top:8px;"><i class="fas fa-info-circle"></i>Recurring bookings will be created for each date. Dates with conflicts will be skipped.</div>
+  </div>
+  
+  <div id="avBox" style="margin-bottom:12px;"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-blue btn-lg" id="submitBkBtn" onclick="submitBk()"><i class="fas fa-check"></i> Submit Booking</button><button class="btn btn-gray btn-lg" onclick="nav('dashboard')"><i class="fas fa-times"></i> Cancel</button></div>
+  </div></div>`;
+  
+  window._guestEmails = [];
+}
+
+function toggleRecurring() {
+  const v = (document.getElementById('bkRec') || {}).value || 'none';
+  const box = document.getElementById('recurBox');
+  if (box) box.style.display = v !== 'none' ? 'block' : 'none';
+}
+
+function addGuest() {
+  const inp = document.getElementById('guestInput');
+  if (!inp) return;
+  const email = inp.value.trim().toLowerCase();
+  if (!email || !email.includes('@')) { toast('Enter a valid email.', 'warning'); return; }
+  if (!window._guestEmails) window._guestEmails = [];
+  if (window._guestEmails.includes(email)) { toast('Already added.', 'warning'); return; }
+  window._guestEmails.push(email);
+  inp.value = '';
+  renderGuestList();
+}
+
+function removeGuest(email) {
+  window._guestEmails = (window._guestEmails || []).filter(e => e !== email);
+  renderGuestList();
+}
+
+function renderGuestList() {
+  const box = document.getElementById('guestList');
+  if (!box) return;
+  box.innerHTML = (window._guestEmails || []).map(e =>
+    `<span style="display:inline-flex;align-items:center;gap:5px;background:var(--blue-l);color:var(--blue);padding:3px 9px;border-radius:20px;font-size:.72rem;font-weight:600;">
+      ${E(e)}<button type="button" onclick="removeGuest('${E(e)}')" style="background:none;border:none;color:var(--blue);cursor:pointer;padding:0;font-size:.7rem;">✕</button>
+    </span>`
+  ).join('');
+}
+
+
+function selectVeg(type) {
+  ['vegLbl','nonvegLbl','bothLbl'].forEach(id => { const el = document.getElementById(id); if (el) { el.style.borderColor = 'var(--border)'; el.style.background = ''; } });
+  const map = { Veg: 'vegLbl', 'Non-Veg': 'nonvegLbl', Both: 'bothLbl' };
+  const lbl = document.getElementById(map[type]); if (lbl) { lbl.style.borderColor = 'var(--blue)'; lbl.style.background = 'var(--blue-l)'; }
+}
+
+async function bkRC() {
+  const id = document.getElementById('bkR').value, box = document.getElementById('rInfo');
+  if (!id) { box.innerHTML = ''; return; }
+  const rooms = await getRooms(), r = rooms.find(x => x.id === id);
+  if (!r) return;
+  box.innerHTML = `<div class="al al-i" style="margin-bottom:12px;"><i class="fas fa-door-open"></i><div><strong>${E(r.name)}</strong> · ${E(r.floor || '')} · Cap:${r.capacity} · Max:${r.max_dur/60}h<div style="margin-top:4px;">${(r.amenities || []).map(a => `<span class="chip" style="background:var(--blue-l);color:var(--blue);">${E(a)}</span>`).join('')}</div></div></div>`;
+  bkAv();
+}
+
+function bkTC() { document.getElementById('extF').style.display = document.getElementById('bkT').value === 'external' ? 'block' : 'none'; }
+
+function bkEO() {
+  const st = document.getElementById('bkS').value, sel = document.getElementById('bkE2');
+  sel.innerHTML = '<option value="">Select end</option>';
+  if (!st) return;
+  for (let m = t2m(st) + 30; m <= 20*60; m += 30) { const t = m2t(m); sel.innerHTML += `<option value="${t}">${ft(t)} (${dur(st, t)})</option>`; }
+  bkAv();
+}
+
+async function bkAv() {
+  const rid = document.getElementById('bkR').value, dt = document.getElementById('bkD').value, box = document.getElementById('avBox');
+  if (!rid || !dt) { box.innerHTML = ''; return; }
+  try {
+    const r = await API.get(`/rooms/${rid}/availability?date=${dt}`);
+    const free = r.slots.filter(s => s.free).length;
+    let h = `<div style="background:var(--bg);border-radius:8px;padding:10px;"><div style="font-size:.66rem;font-weight:700;color:var(--gray);text-transform:uppercase;margin-bottom:7px;">Availability – ${fd(dt)}</div><div style="display:flex;flex-wrap:wrap;">`;
+    r.slots.forEach(s => {
+      if (s.free) {
+        const pTag = s.pending_requests > 0 ? ` <span style="font-size:.58rem;background:#fef3c7;color:#92400e;padding:1px 4px;border-radius:4px;font-weight:700;">${s.pending_requests} pending</span>` : '';
+        h += `<span class="sf" onclick="fillSlot('${s.start}','${s.end}')" title="${s.pending_requests > 0 ? s.pending_requests + ' pending external request(s) for this slot — still bookable' : 'Available'}">${ft(s.start)}${pTag}</span>`;
+      } else {
+        h += `<span class="sb2">${ft(s.start)}</span>`;
+      }
+    });
+    h += `</div><div style="font-size:.68rem;color:var(--gray);margin-top:5px;">${free}/${r.slots.length} free · tap green to auto-fill</div></div>`;
+    box.innerHTML = h;
+  } catch { box.innerHTML = ''; }
+}
+
+function fillSlot(s, e) {
+  const ss = document.getElementById('bkS'), se = document.getElementById('bkE2');
+  for (let i = 0; i < ss.options.length; i++) { if (ss.options[i].value === s) { ss.selectedIndex = i; break; } }
+  bkEO(); setTimeout(() => { for (let i = 0; i < se.options.length; i++) { if (se.options[i].value === e) { se.selectedIndex = i; break; } } }, 60);
+}
+
+async function submitBk() {
+  const rid = document.getElementById('bkR').value, dt = document.getElementById('bkD').value, s = document.getElementById('bkS').value, e = document.getElementById('bkE2').value, tp = document.getElementById('bkT').value, pu = document.getElementById('bkPu').value.trim(), pp = (document.getElementById('bkP') || {}).value || '', fd2 = (document.getElementById('bkF') || {}).value || 'false', rm2 = (document.getElementById('bkRm') || {}).value || '', er = document.getElementById('bkE');
+  const recurring = (document.getElementById('bkRec') || {}).value || 'none';
+  const recurringEnd = (document.getElementById('bkRecEnd') || {}).value || null;
+  const guestEmails = window._guestEmails || [];
+  let vegType = '';
+  const vOpts = document.getElementsByName('vegtype');
+  for (let i = 0; i < vOpts.length; i++) { if (vOpts[i].checked) { vegType = vOpts[i].value; break; } }
+  er.innerHTML = '';
+  const miss = [];
+  if (!rid) miss.push('Room'); if (!dt) miss.push('Date'); if (!s) miss.push('Start Time'); if (!e) miss.push('End Time'); if (!tp) miss.push('Meeting Type'); if (!pu) miss.push('Purpose');
+  if (tp === 'external' && !pp) miss.push('Number of Persons');
+  if (tp === 'external' && fd2 === 'true' && !vegType) miss.push('Food Preference');
+  if (recurring !== 'none' && !recurringEnd) miss.push('Repeat Until date');
+  if (miss.length) { er.innerHTML = `<div class="al al-e"><i class="fas fa-exclamation-circle"></i>Please fill: ${E(miss.join(', '))}</div>`; return; }
+  const btn = document.getElementById('submitBkBtn'); btn.innerHTML = '<div class="spin"></div> Submitting...'; btn.disabled = true;
+  try {
+    const result = await API.post('/bookings', { room_id: rid, date: dt, start_time: s, end_time: e, meeting_type: tp, purpose: pu, persons: pp, food: fd2 === 'true', veg_nonveg: fd2 === 'true' ? vegType : '', remarks: rm2, guest_emails: guestEmails, recurring, recurring_end: recurringEnd });
+    const recMsg = result.recurring_count > 1 ? ` (${result.recurring_count} occurrences created)` : '';
+    // Fire email notification
+    emailOnNewBooking(result);
+    if (result.status === 'approved') emailOnApproved(result);
+    toast(tp === 'external' ? `Submitted for approval!${recMsg}` : `Booking confirmed!${recMsg}`, 'success');
+    nav('mybookings');
+  } catch (err) { er.innerHTML = `<div class="al al-e"><i class="fas fa-exclamation-circle"></i>${E(err.message)}</div>`; btn.innerHTML = '<i class="fas fa-check"></i> Submit Booking'; btn.disabled = false; }
+}
+
+// ── MY BOOKINGS ─────────────────────────────────────────────────────────────
+let _MB = [];
+async function pgMine() {
+  try {
+    _MB = await API.get('/bookings');
+    _MB.sort((a, b) => a.date < b.date ? 1 : -1);
+    document.getElementById('MC').innerHTML = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">My Bookings <span style="font-size:.76rem;font-weight:400;color:var(--gray);">(${_MB.length})</span></div><button class="btn btn-blue" onclick="nav('newbooking')"><i class="fas fa-plus"></i> New</button></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"><select id="mfs" class="sel" style="width:auto;" onchange="filterMine()"><option value="">All Status</option><option value="approved">Approved</option><option value="pending">Pending</option><option value="rejected">Rejected</option><option value="cancelled">Cancelled</option></select><select id="mft" class="sel" style="width:auto;" onchange="filterMine()"><option value="">All Time</option><option value="upcoming">Upcoming</option><option value="past">Past</option></select></div><div id="mbT"></div>`;
+    filterMine();
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+function filterMine() {
+  const today = td(), fs = (document.getElementById('mfs') || {}).value || '', ft2 = (document.getElementById('mft') || {}).value || '';
+  const list = _MB.filter(b => { if (fs && b.status !== fs) return false; if (ft2 === 'upcoming' && b.date < today) return false; if (ft2 === 'past' && b.date >= today) return false; return true; });
+  const el = document.getElementById('mbT');
+  if (!list.length) { el.innerHTML = '<div class="card"><div class="empty"><i class="far fa-calendar-times"></i><p>No bookings found</p></div></div>'; return; }
+  const rows = list.map(b => {
+    const cc = ['approved','pending'].includes(b.status) && b.date >= today;
+    const foodStr = b.food ? (b.veg_nonveg ? '🍽️ ' + b.veg_nonveg : '🍽️') : '';
+    return `<tr><td><strong>${fd(b.date)}</strong><br><span style="font-size:.68rem;color:var(--gray);">${ft(b.start_time)}–${ft(b.end_time)}</span></td><td><span style="color:${b.room_color || '#ccc'};font-weight:700;">${E(b.room_name)}</span></td><td style="max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${E(b.purpose)}</td><td><span class="bdg b${b.meeting_type[0]}">${b.meeting_type}</span> ${foodStr}</td><td><span class="bdg b${b.status[0]}">${b.status.toUpperCase()}</span></td><td><div style="display:flex;gap:4px;"><button class="btn btn-gray btn-sm" onclick="viewBk('${b.id}')"><i class="fas fa-eye"></i></button>${cc ? `<button class="btn btn-red btn-sm" onclick="confCancel('${b.id}')"><i class="fas fa-times"></i></button>` : ''}</div></td></tr>`;
+  }).join('');
+  el.innerHTML = `<div class="card"><div class="tw"><table><thead><tr><th>Date</th><th>Room</th><th>Purpose</th><th>Type</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+async function viewBk(id) {
+  try {
+    const b = await API.get('/bookings/' + id);
+    const today = td(), cc = ['approved','pending'].includes(b.status) && b.date >= today;
+    const foodStr = b.food ? ('Yes 🍽️' + (b.veg_nonveg ? ' (' + b.veg_nonveg + ')' : '')) : 'No';
+    const guests = (b.guest_emails || []);
+    const checkinBadge = b.checkin_at
+      ? `<span class="bdg ba" style="margin-left:6px;">✅ Checked In</span>`
+      : (b.status === 'approved' ? `<span class="bdg bc" style="margin-left:6px;">Not checked in</span>` : '');
+    const h = `<div style="border-left:4px solid ${b.room_color || '#ccc'};padding:9px 12px;border-radius:0 8px 8px 0;background:var(--bg);margin-bottom:14px;"><div style="font-weight:700;color:${b.room_color || '#ccc'};font-size:.88rem;">${E(b.room_name)}</div><div style="font-size:.72rem;color:var(--gray);">${E(b.room_floor || '')}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px;">
+      <div style="background:var(--bg);border-radius:8px;padding:9px;"><div style="color:var(--gray);font-size:.62rem;font-weight:700;text-transform:uppercase;margin-bottom:2px;">Booked By</div><div style="font-weight:600;font-size:.8rem;">${E(b.user_name)}</div><div style="color:var(--gray);font-size:.72rem;">${E(b.user_email)}</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:9px;"><div style="color:var(--gray);font-size:.62rem;font-weight:700;text-transform:uppercase;margin-bottom:2px;">Status</div><span class="bdg b${b.status[0]}">${b.status.toUpperCase()}</span>${checkinBadge}</div>
+      <div style="background:var(--bg);border-radius:8px;padding:9px;"><div style="color:var(--gray);font-size:.62rem;font-weight:700;text-transform:uppercase;margin-bottom:2px;">Date & Time</div><div style="font-weight:600;font-size:.8rem;">${fd(b.date)}</div><div style="color:var(--gray);font-size:.72rem;">${ft(b.start_time)} – ${ft(b.end_time)} (${dur(b.start_time, b.end_time)})</div></div>
+      <div style="background:var(--bg);border-radius:8px;padding:9px;"><div style="color:var(--gray);font-size:.62rem;font-weight:700;text-transform:uppercase;margin-bottom:2px;">Type & Food</div><span class="bdg b${b.meeting_type[0]}">${b.meeting_type}</span><div style="margin-top:4px;font-size:.72rem;">${foodStr}</div>${b.persons ? `<div style="margin-top:3px;font-size:.72rem;color:var(--gray);">${E(String(b.persons))} persons</div>` : ''}</div>
+    </div>
+    <div style="background:var(--bg);border-radius:8px;padding:11px;font-size:.8rem;margin-bottom:9px;"><strong>Purpose:</strong> ${E(b.purpose)}${b.remarks ? `<div style="margin-top:6px;"><strong>Remarks:</strong> ${E(b.remarks)}</div>` : ''}${b.rejection_reason ? `<div style="margin-top:6px;color:var(--red);"><strong>Rejection:</strong> ${E(b.rejection_reason)}</div>` : ''}</div>
+    ${guests.length ? `<div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:9px;font-size:.78rem;"><strong>Guests:</strong> ${guests.map(g => `<span style="background:var(--blue-l);color:var(--blue);padding:2px 7px;border-radius:20px;font-size:.68rem;margin:2px;display:inline-block;">${E(g)}</span>`).join('')}</div>` : ''}
+    ${b.recurring_group ? `<div style="background:var(--orange-l);border-radius:8px;padding:9px 12px;font-size:.76rem;color:#92400e;border-left:3px solid var(--orange);margin-bottom:9px;"><i class="fas fa-redo"></i> <strong>Recurring booking</strong> — part of a series.</div>` : ''}
+    ${b.status === 'approved' ? `<div id="qrBox" style="text-align:center;"></div>` : ''}`;
+
+    const btns = [{ l: 'Close', c: 'btn-gray', f: closeModal }];
+    if (b.status === 'approved') btns.unshift({ l: '📱 Show QR', c: 'btn-gray', f: () => showQR(id) });
+    if (cc) btns.unshift({ l: 'Cancel Booking', c: 'btn-red', f: () => { closeModal(); confCancel(id); } });
+    if (cc && b.recurring_group) btns.unshift({ l: 'Cancel All Recurring', c: 'btn-red', f: () => { closeModal(); confCancelRecurring(id); } });
+    modal('Booking Details', h, btns);
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+async function showQR(id) {
+  try {
+    const r = await API.get(`/bookings/${id}/qr`);
+    const el = document.getElementById('qrBox');
+    if (el) {
+      el.innerHTML = `<div style="padding:14px;background:var(--bg);border-radius:10px;display:inline-block;"><img src="${r.qr}" style="width:160px;height:160px;display:block;border-radius:8px;"/><div style="font-size:.68rem;color:var(--gray);margin-top:6px;">Scan to check in</div></div>`;
+    } else {
+      modal('QR Check-In Code', `<div style="text-align:center;padding:12px;"><img src="${r.qr}" style="width:220px;height:220px;border-radius:10px;display:block;margin:0 auto;"/><p style="color:var(--gray);font-size:.76rem;margin-top:10px;">Scan this QR code to check into your meeting</p><a href="${r.url}" target="_blank" style="font-size:.72rem;color:var(--blue);">${r.url}</a></div>`, [{ l: 'Close', c: 'btn-gray', f: closeModal }]);
+    }
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+function confCancelRecurring(id) {
+  modal('Cancel All Recurring', '<p style="color:var(--gray);font-size:.82rem;">Cancel all upcoming occurrences in this recurring series?</p>',
+    [{ l: 'Keep', c: 'btn-gray', f: closeModal }, { l: 'Cancel All', c: 'btn-red', f: async () => {
+      try { const r = await API.patch('/bookings/' + id + '/cancel-recurring'); closeModal(); toast(r.message, 'info'); if (VIEW === 'mybookings') pgMine(); }
+      catch (err) { toast(err.message, 'error'); }
+    }}]);
+}
+
+function confCancel(id) {
+  modal('Cancel Booking', '<p style="color:var(--gray);font-size:.82rem;">Are you sure you want to cancel this booking?</p>',
+    [{ l: 'Keep It', c: 'btn-gray', f: closeModal }, { l: 'Yes, Cancel', c: 'btn-red', f: async () => {
+      try { const b = await API.get('/bookings/' + id); await API.patch('/bookings/' + id + '/cancel'); emailOnCancelled(b); closeModal(); toast('Cancelled.', 'info'); if (VIEW === 'mybookings') pgMine(); else if (VIEW === 'allbookings') pgAllBk(); else if (VIEW === 'approvals') pgApprove(); else pgDash(); }
+      catch (err) { toast(err.message, 'error'); }
+    }}]);
+}
+
+// ── CALENDAR ───────────────────────────────────────────────────────────────
+async function pgCal() {
+  if (!CY) { CY = new Date().getFullYear(); CM = new Date().getMonth(); }
+  document.getElementById('MC').innerHTML = `<div class="card cb"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px;"><div style="display:flex;align-items:center;gap:6px;"><button class="btn btn-gray btn-sm" onclick="calN(-1)"><i class="fas fa-chevron-left"></i></button><div id="calT" style="font-weight:700;min-width:144px;text-align:center;font-size:.9rem;"></div><button class="btn btn-gray btn-sm" onclick="calN(1)"><i class="fas fa-chevron-right"></i></button></div><button class="btn btn-gray btn-sm" onclick="CY=new Date().getFullYear();CM=new Date().getMonth();drawCal()">Today</button></div><div id="calG"></div></div>`;
+  drawCal();
+}
+function calN(d) { CM += d; if (CM > 11) { CM = 0; CY++; } if (CM < 0) { CM = 11; CY--; } drawCal(); }
+
+async function drawCal() {
+  const mos = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calT').textContent = mos[CM] + ' ' + CY;
+  const first = new Date(CY, CM, 1).getDay(), dim = new Date(CY, CM+1, 0).getDate(), today = td();
+  let bks = [];
+  try { bks = await API.get('/bookings'); } catch {}
+  let h = '<div class="cg">' + ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="ch">${d}</div>`).join('');
+  for (let i = 0; i < first; i++) h += '<div class="cc co"></div>';
+  for (let day = 1; day <= dim; day++) {
+    const date = CY + '-' + String(CM+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    const isT = date === today;
+    const dBk = bks.filter(b => b.date === date && !['cancelled','rejected'].includes(b.status));
+    h += `<div class="cc${isT ? ' ct' : ''}" onclick="showDay('${date}')"><div style="font-size:.76rem;font-weight:${isT ? 800 : 600};color:${isT ? 'var(--blue)' : 'var(--text)'};">${day}</div>`;
+    dBk.slice(0, 3).forEach(b => { h += `<div class="cdot" style="background:${(b.room_color || '#ccc')}20;color:${b.room_color || '#ccc'};">${ft(b.start_time)} ${E((b.room_name || '').split(' ')[0])}</div>`; });
+    if (dBk.length > 3) h += `<div style="font-size:.6rem;color:var(--gray);">+${dBk.length-3} more</div>`;
+    h += '</div>';
+  }
+  h += '</div>';
+  document.getElementById('calG').innerHTML = h;
+}
+
+async function showDay(date) {
+  let bks = [];
+  try { bks = (await API.get('/bookings')).filter(b => b.date === date && !['cancelled','rejected'].includes(b.status)); } catch {}
+  if (!bks.length) { modal('Bookings – ' + fd(date), '<div class="empty"><i class="far fa-calendar"></i><p>No bookings this day.</p></div>', [{ l: 'Close', c: 'btn-gray', f: closeModal }]); return; }
+  const h = bks.map(b => `<div style="border-left:4px solid ${b.room_color || '#ccc'};padding:8px 11px;border-radius:0 8px 8px 0;background:var(--bg);margin-bottom:8px;"><div style="font-weight:700;color:${b.room_color || '#ccc'};font-size:.82rem;">${E(b.room_name)}</div><div style="font-size:.7rem;color:var(--gray);margin-top:1px;">${ft(b.start_time)} – ${ft(b.end_time)} · ${dur(b.start_time, b.end_time)}</div><div style="font-size:.76rem;margin-top:2px;">${E(b.purpose)}</div><div style="font-size:.68rem;color:var(--gray);">by ${E(b.user_name)}</div><span class="bdg b${b.status[0]}" style="margin-top:4px;">${b.status}</span></div>`).join('');
+  modal('Bookings – ' + fd(date) + ' (' + bks.length + ')', h, [{ l: 'Close', c: 'btn-gray', f: closeModal }]);
+}
+
+// ── TIMELINE ───────────────────────────────────────────────────────────────
+async function pgTL() {
+  const today = td(), rooms = await getRooms(), bks = (await API.get('/bookings')).filter(b => b.date === today && !['cancelled','rejected'].includes(b.status));
+  const hours = [9,10,11,12,13,14,15,16,17,18,19], nowH = new Date().getHours();
+  let h = `<div class="card cb"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;"><div style="font-weight:700;font-size:.88rem;"><i class="fas fa-clock" style="color:var(--blue);margin-right:6px;"></i>Timeline – Today</div><button class="btn btn-blue btn-sm np" onclick="nav('newbooking')"><i class="fas fa-plus"></i> Book</button></div><div style="overflow-x:auto;"><div style="min-width:500px;"><div style="display:grid;grid-template-columns:66px repeat(${rooms.length},1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;">`;
+  h += '<div style="padding:7px 5px;background:var(--bg);border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:.63rem;font-weight:700;color:var(--gray);">TIME</div>';
+  rooms.forEach(r => { h += `<div style="padding:7px 5px;background:var(--bg);border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:.68rem;font-weight:700;color:${r.color};text-align:center;">${E(r.name)}</div>`; });
+  hours.forEach(hr => {
+    const isN = hr === nowH;
+    h += `<div style="padding:7px 5px;background:${isN ? '#fffbeb' : 'var(--bg)'};border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:.68rem;font-weight:600;color:var(--gray);display:flex;align-items:center;">${ft(m2t(hr*60))}</div>`;
+    rooms.forEach(r => {
+      const bk = bks.find(b => b.room_id === r.id && t2m(b.start_time) <= hr*60 && t2m(b.end_time) > hr*60);
+      if (bk) h += `<div style="padding:3px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:${r.color}15;"><div style="background:${r.color};color:#fff;border-radius:5px;padding:4px 6px;font-size:.65rem;font-weight:600;min-height:44px;display:flex;flex-direction:column;justify-content:center;"><span>${ft(bk.start_time)}–${ft(bk.end_time)}</span><span style="font-weight:400;opacity:.85;font-size:.59rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${E(bk.purpose)}</span></div></div>`;
+      else h += `<div style="border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-height:50px;background:${isN ? '#fefce8' : 'transparent'};"><span style="font-size:.6rem;color:var(--gray);padding:3px 5px;display:block;opacity:.3;">free</span></div>`;
+    });
+  });
+  h += '</div></div></div></div>';
+  document.getElementById('MC').innerHTML = h;
+}
+
+// ── APPROVALS ──────────────────────────────────────────────────────────────
+async function pgApprove() {
+  if (!isAdm()) return;
+  try {
+    const bks = (await API.get('/bookings?status=pending')).sort((a,b) => a.date > b.date ? 1 : -1);
+    let h = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">Approval Center <span style="font-size:.76rem;font-weight:400;color:var(--gray);">(${bks.length} pending)</span></div></div>`;
+    if (!bks.length) { h += '<div class="card"><div class="empty" style="padding:52px;"><i class="fas fa-check-circle" style="color:var(--green);opacity:1;font-size:2rem;display:block;margin-bottom:8px;"></i><p style="color:var(--green);font-weight:700;">All clear! No pending approvals.</p></div></div>'; document.getElementById('MC').innerHTML = h; return; }
+    h += '<div style="display:flex;flex-direction:column;gap:10px;">' + bks.map(b => {
+      const foodStr = b.food ? ('Yes 🍽️' + (b.veg_nonveg ? ' (' + b.veg_nonveg + ')' : '')) : 'No';
+      return `<div class="card cb"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:9px;flex-wrap:wrap;"><div style="flex:1;min-width:170px;"><div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><div style="width:7px;height:7px;border-radius:50%;background:${b.room_color || '#ccc'};flex-shrink:0;"></div><span style="font-weight:700;font-size:.9rem;">${E(b.room_name)}</span>${b.food ? `<span class="bdg" style="background:var(--orange-l);color:var(--orange);">${foodStr}</span>` : ''}</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:5px;font-size:.74rem;color:var(--gray);margin-bottom:8px;"><span><i class="fas fa-user" style="width:13px;"></i> ${E(b.user_name)}</span><span><i class="fas fa-envelope" style="width:13px;"></i> ${E(b.user_email)}</span><span><i class="far fa-calendar" style="width:13px;"></i> ${fd(b.date)}</span><span><i class="far fa-clock" style="width:13px;"></i> ${ft(b.start_time)} – ${ft(b.end_time)} (${dur(b.start_time,b.end_time)})</span>${b.persons ? `<span><i class="fas fa-users" style="width:13px;"></i> ${E(String(b.persons))} persons</span>` : ''}</div><div style="background:var(--bg);border-radius:7px;padding:9px;font-size:.76rem;"><strong>Purpose:</strong> ${E(b.purpose)}${b.remarks ? '<br><strong>Remarks:</strong> ' + E(b.remarks) : ''}</div></div><div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;"><button class="btn btn-grn" onclick="doApprove('${b.id}')"><i class="fas fa-check"></i> Approve</button><button class="btn btn-red" onclick="openReject('${b.id}')"><i class="fas fa-times"></i> Reject</button></div></div></div>`;
+    }).join('') + '</div>';
+    document.getElementById('MC').innerHTML = h;
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+async function doApprove(id) {
+  try {
+    const b = await API.get('/bookings/' + id);
+    await API.patch('/bookings/' + id + '/approve');
+    emailOnApproved(b);
+    toast('Approved!', 'success'); renderNav(); pgApprove();
+  } catch (err) { toast(err.message, 'error'); }
+}
+function openReject(id) {
+  modal('Reject Booking', '<p style="color:var(--gray);font-size:.78rem;margin-bottom:12px;">Provide a reason (shown to user).</p><div class="fg"><label class="lbl">Reason *</label><textarea id="rjR" class="ta" placeholder="e.g. Room unavailable..."></textarea></div>',
+    [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Confirm Rejection', c: 'btn-red', f: async () => {
+      const r = document.getElementById('rjR').value.trim(); if (!r) { toast('Please enter a reason.', 'warning'); return; }
+      try {
+        const b = await API.get('/bookings/' + id);
+        await API.patch('/bookings/' + id + '/reject', { reason: r });
+        emailOnRejected({ ...b, rejection_reason: r });
+        closeModal(); toast('Rejected.', 'info'); renderNav(); pgApprove();
+      } catch (err) { toast(err.message, 'error'); }
+    }}]);
+}
+
+// ── ROOMS ──────────────────────────────────────────────────────────────────
+async function pgRooms() {
+  if (!isAdm()) return;
+  try {
+    const rooms = await getRooms(), bks = await API.get('/bookings'), today = td();
+    let h = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">Room Control</div><button class="btn btn-blue" onclick="addRoom()"><i class="fas fa-plus"></i> Add Room</button></div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:12px;">`;
+    rooms.forEach(r => {
+      const tb = bks.filter(b => b.room_id === r.id && b.date === today && !['cancelled','rejected'].includes(b.status)).length;
+      const tot = bks.filter(b => b.room_id === r.id && !['cancelled','rejected'].includes(b.status)).length;
+      h += `<div style="background:var(--card);border:1.5px solid ${r.blocked ? '#fecaca' : r.color+'55'};border-radius:12px;padding:15px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;"><div style="display:flex;align-items:center;gap:8px;"><div style="width:34px;height:34px;border-radius:9px;background:${r.color}1a;color:${r.color};display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;"><i class="fas fa-door-open"></i></div><div><div style="font-weight:700;font-size:.84rem;">${E(r.name)}</div><div style="font-size:.68rem;color:var(--gray);">${E(r.floor || '')}</div></div></div><span class="bdg ${r.blocked ? 'br' : 'ba'}">${r.blocked ? 'Blocked' : 'Active'}</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:.7rem;color:var(--gray);margin-bottom:10px;"><div><i class="fas fa-users" style="width:11px;"></i> Cap: ${r.capacity}</div><div><i class="fas fa-clock" style="width:11px;"></i> Max: ${r.max_dur/60}h</div><div><i class="fas fa-calendar" style="width:11px;"></i> Today: ${tb}</div><div><i class="fas fa-chart-bar" style="width:11px;"></i> Total: ${tot}</div></div><div style="margin-bottom:10px;">${(r.amenities || []).map(a => `<span class="chip" style="background:${r.color}18;color:${r.color};">${E(a)}</span>`).join('')}</div><div style="display:flex;gap:6px;"><button class="btn btn-gray btn-sm" style="flex:1;justify-content:center;" onclick="editRoom('${r.id}')"><i class="fas fa-edit"></i> Edit</button><button class="btn ${r.blocked ? 'btn-grn' : 'btn-red'} btn-sm" style="flex:1;justify-content:center;" onclick="toggleRoom('${r.id}')">${r.blocked ? '<i class="fas fa-unlock"></i> Unblock' : '<i class="fas fa-ban"></i> Block'}</button></div></div>`;
+    });
+    h += '</div>';
+    document.getElementById('MC').innerHTML = h;
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+async function toggleRoom(id) { try { await API.patch('/rooms/' + id + '/toggle-block'); bustCache(); toast('Updated.', 'success'); pgRooms(); } catch (err) { toast(err.message, 'error'); } }
+
+function rFrmH(r = {}) {
+  return `<div class="row2"><div class="fg" style="grid-column:1/-1;"><label class="lbl">Room Name *</label><input id="rfN" class="inp" value="${E(r.name || '')}" placeholder="Conference Room A"/></div><div class="fg"><label class="lbl">Capacity</label><input type="number" id="rfC" class="inp" value="${r.capacity || 10}" min="1"/></div><div class="fg"><label class="lbl">Max Duration (min)</label><input type="number" id="rfD" class="inp" value="${r.max_dur || 240}" min="30" step="30"/></div><div class="fg"><label class="lbl">Floor / Location</label><input id="rfF" class="inp" value="${E(r.floor || '')}" placeholder="2nd Floor"/></div><div class="fg"><label class="lbl">Color</label><input type="color" id="rfCo" class="inp" value="${r.color || '#3d6ce7'}" style="height:40px;padding:4px;cursor:pointer;"/></div><div class="fg" style="grid-column:1/-1;"><label class="lbl">Amenities (comma-separated)</label><input id="rfA" class="inp" value="${E((r.amenities || []).join(', '))}" placeholder="Projector, Whiteboard"/></div></div>`;
+}
+function getRFD() { return { name: document.getElementById('rfN').value.trim(), capacity: +document.getElementById('rfC').value || 10, max_dur: +document.getElementById('rfD').value || 240, floor: document.getElementById('rfF').value.trim(), color: document.getElementById('rfCo').value, amenities: document.getElementById('rfA').value.split(',').map(s => s.trim()).filter(Boolean) }; }
+
+function addRoom() {
+  modal('Add New Room', rFrmH(), [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Add Room', c: 'btn-blue', f: async () => {
+    const d = getRFD(); if (!d.name) { toast('Name required.', 'warning'); return; }
+    try { await API.post('/rooms', d); bustCache(); closeModal(); toast('Room added!', 'success'); pgRooms(); } catch (err) { toast(err.message, 'error'); }
+  }}]);
+}
+
+async function editRoom(id) {
+  const rooms = await getRooms(), r = rooms.find(x => x.id === id);
+  modal('Edit Room', rFrmH(r), [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Save', c: 'btn-blue', f: async () => {
+    const d = getRFD(); if (!d.name) { toast('Name required.', 'warning'); return; }
+    try { await API.patch('/rooms/' + id, d); bustCache(); closeModal(); toast('Room updated!', 'success'); pgRooms(); } catch (err) { toast(err.message, 'error'); }
+  }}]);
+}
+
+// ── USERS ──────────────────────────────────────────────────────────────────
+async function pgUsers() {
+  if (!isAdm()) return;
+  try {
+    const users = await getUsers(), bks = await API.get('/bookings');
+    const rows = users.map(u => {
+      const bc = bks.filter(b => b.user_id === u.id && b.status === 'approved').length;
+      return `<tr><td><div style="display:flex;align-items:center;gap:7px;"><div class="av" style="width:27px;height:27px;font-size:.72rem;border-radius:6px;">${u.name[0].toUpperCase()}</div><div><div style="font-weight:600;font-size:.78rem;">${E(u.name)}</div><div style="font-size:.68rem;color:var(--gray);">${E(u.email)}</div>${u.dept ? `<div style="font-size:.65rem;color:var(--gray);">${E(u.dept)}</div>` : ''}</div></div></td><td><span class="bdg ${u.role === 'admin' ? 'badm' : 'bemp'}">${u.role.toUpperCase()}</span></td><td style="font-weight:700;color:var(--blue);text-align:center;">${bc}</td><td><span class="bdg ${u.active ? 'ba' : 'br'}">${u.active ? 'Active' : 'Inactive'}</span></td><td style="font-size:.7rem;color:var(--gray);">${new Date(u.created_at).toLocaleDateString('en-IN')}</td><td><div style="display:flex;gap:4px;flex-wrap:wrap;"><button class="btn btn-blue btn-sm" onclick="adminEditUser('${u.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-gray btn-sm" onclick="toggleUser('${u.id}')">${u.active ? 'Deactivate' : 'Activate'}</button><button class="btn btn-gray btn-sm" onclick="resetUP('${u.id}')"><i class="fas fa-key"></i></button>${u.id !== CU.id ? `<button class="btn btn-red btn-sm" onclick="delUser('${u.id}')"><i class="fas fa-trash"></i></button>` : ''}</div></td></tr>`;
+    }).join('');
+    document.getElementById('MC').innerHTML = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">User Management</div><button class="btn btn-blue" onclick="addUser()"><i class="fas fa-user-plus"></i> Add User</button></div><div class="card"><div class="tw"><table><thead><tr><th>User</th><th>Role</th><th>Approved</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+async function adminEditUser(id) {
+  const users = await getUsers(), u = users.find(x => x.id === id);
+  modal('Edit User – ' + u.name, `<div id="aeuErr"></div><div class="row2"><div class="fg"><label class="lbl">Full Name *</label><input id="aeuN" class="inp" value="${E(u.name)}"/></div><div class="fg"><label class="lbl">Email *</label><input type="email" id="aeuE" class="inp" value="${E(u.email)}"/></div><div class="fg"><label class="lbl">Phone</label><input id="aeuPh" class="inp" value="${E(u.phone || '')}"/></div><div class="fg"><label class="lbl">Department</label><input id="aeuDept" class="inp" value="${E(u.dept || '')}"/></div><div class="fg"><label class="lbl">Role</label><select id="aeuR" class="sel"><option value="employee"${u.role === 'employee' ? ' selected' : ''}>Employee</option><option value="admin"${u.role === 'admin' ? ' selected' : ''}>Admin</option></select></div></div>`,
+    [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Save Changes', c: 'btn-blue', f: async () => {
+      const name = document.getElementById('aeuN').value.trim(), email = document.getElementById('aeuE').value.trim(), phone = document.getElementById('aeuPh').value.trim(), dept = document.getElementById('aeuDept').value.trim(), role = document.getElementById('aeuR').value;
+      if (!name || !email) { mErr('aeuErr', 'Name and email required.'); return; }
+      try { const updated = await API.patch('/users/' + id, { name, email, phone, dept, role }); bustCache(); if (id === CU.id) { CU.name = updated.name; updTop(); updSU(); } closeModal(); toast('User updated!', 'success'); pgUsers(); } catch (err) { mErr('aeuErr', err.message); }
+    }}]);
+}
+
+function addUser() {
+  modal('Add New User', `<div id="nuErr"></div><div class="row2"><div class="fg"><label class="lbl">Full Name *</label><input id="nuN" class="inp" placeholder="Jane Smith"/></div><div class="fg"><label class="lbl">Email *</label><input type="email" id="nuE" class="inp" placeholder="jane@company.com"/></div><div class="fg"><label class="lbl">Password *</label><input type="password" id="nuP" class="inp" placeholder="Min 6 characters"/></div><div class="fg"><label class="lbl">Phone</label><input id="nuPh" class="inp" placeholder="+91 98765 43210"/></div><div class="fg"><label class="lbl">Department</label><input id="nuDept" class="inp" placeholder="e.g. Sales"/></div><div class="fg"><label class="lbl">Role</label><select id="nuR" class="sel"><option value="employee">Employee</option><option value="admin">Admin</option></select></div></div>`,
+    [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Create', c: 'btn-blue', f: async () => {
+      const n = document.getElementById('nuN').value.trim(), em = document.getElementById('nuE').value.trim(), pw = document.getElementById('nuP').value, ro = document.getElementById('nuR').value, ph = document.getElementById('nuPh').value.trim(), dept = document.getElementById('nuDept').value.trim();
+      if (!n || !em || !pw) { mErr('nuErr', 'Name, email, password required.'); return; }
+      if (pw.length < 6) { mErr('nuErr', 'Min 6 characters.'); return; }
+      try { await API.post('/users', { name: n, email: em, password: pw, role: ro, phone: ph, dept }); bustCache(); closeModal(); toast('User created!', 'success'); pgUsers(); } catch (err) { mErr('nuErr', err.message); }
+    }}]);
+}
+
+async function toggleUser(id) { try { await API.patch('/users/' + id + '/toggle-active'); bustCache(); toast('Updated.', 'success'); pgUsers(); } catch (err) { toast(err.message, 'error'); } }
+
+function resetUP(id) {
+  modal('Reset Password', '<div class="fg"><label class="lbl">New Password *</label><input type="password" id="rpP" class="inp" placeholder="Min 6 characters"/></div>',
+    [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Reset', c: 'btn-blue', f: async () => {
+      const p = document.getElementById('rpP').value; if (p.length < 6) { toast('Min 6 chars.', 'warning'); return; }
+      try { await API.patch('/users/' + id + '/reset-password', { newPassword: p }); closeModal(); toast('Password reset!', 'success'); } catch (err) { toast(err.message, 'error'); }
+    }}]);
+}
+
+function delUser(id) {
+  modal('Delete User', '<p style="color:var(--gray);font-size:.82rem;">Delete this user? Their booking history will be kept.</p>',
+    [{ l: 'Cancel', c: 'btn-gray', f: closeModal }, { l: 'Delete', c: 'btn-red', f: async () => {
+      try { await API.delete('/users/' + id); bustCache(); closeModal(); toast('User deleted.', 'info'); pgUsers(); } catch (err) { toast(err.message, 'error'); }
+    }}]);
+}
+
+// ── ALL BOOKINGS ───────────────────────────────────────────────────────────
+let _AB = [];
+async function pgAllBk() {
+  if (!isAdm()) return;
+  try {
+    const rooms = await getRooms();
+    _AB = await API.get('/bookings');
+    _AB.sort((a,b) => a.date < b.date ? 1 : -1);
+    document.getElementById('MC').innerHTML = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">All Bookings <span style="font-size:.76rem;font-weight:400;color:var(--gray);">(${_AB.length})</span></div></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"><div style="display:flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:0 9px;"><i class="fas fa-search" style="color:var(--gray);font-size:.76rem;"></i><input id="abQ" class="inp" style="border:none;padding:7px 4px;width:165px;" placeholder="Search..." oninput="filterAllBk()"/></div><select id="abRm" class="sel" style="width:auto;" onchange="filterAllBk()"><option value="">All Rooms</option>${rooms.map(r => `<option value="${r.id}">${E(r.name)}</option>`).join('')}</select><select id="abSt" class="sel" style="width:auto;" onchange="filterAllBk()"><option value="">All Status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="cancelled">Cancelled</option></select><select id="abTp" class="sel" style="width:auto;" onchange="filterAllBk()"><option value="">All Types</option><option value="internal">Internal</option><option value="external">External</option></select></div><div id="abT"></div>`;
+    filterAllBk();
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+function filterAllBk() {
+  const today = td(), q = ((document.getElementById('abQ') || {}).value || '').toLowerCase(), fr = (document.getElementById('abRm') || {}).value || '', fs = (document.getElementById('abSt') || {}).value || '', ftp = (document.getElementById('abTp') || {}).value || '';
+  const list = _AB.filter(b => { if (fr && b.room_id !== fr) return false; if (fs && b.status !== fs) return false; if (ftp && b.meeting_type !== ftp) return false; if (q && !(b.purpose || '').toLowerCase().includes(q) && !(b.user_name || '').toLowerCase().includes(q) && !(b.user_email || '').toLowerCase().includes(q)) return false; return true; });
+  const el = document.getElementById('abT');
+  if (!list.length) { el.innerHTML = '<div class="card"><div class="empty"><i class="fas fa-search"></i><p>No bookings match.</p></div></div>'; return; }
+  const rows = list.map(b => {
+    const cc = ['approved','pending'].includes(b.status) && b.date >= today;
+    const foodStr = b.food ? ('🍽️' + (b.veg_nonveg ? ' ' + b.veg_nonveg : '')) : '';
+    return `<tr><td><strong>${fd(b.date)}</strong><br><span style="font-size:.68rem;color:var(--gray);">${ft(b.start_time)}–${ft(b.end_time)}</span></td><td><span style="color:${b.room_color || '#ccc'};font-weight:700;">${E(b.room_name)}</span></td><td><div style="font-weight:600;font-size:.78rem;">${E(b.user_name)}</div><div style="font-size:.68rem;color:var(--gray);">${E(b.user_email)}</div></td><td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${E(b.purpose)}</td><td><span class="bdg b${b.meeting_type[0]}">${b.meeting_type}</span> ${foodStr}</td><td><span class="bdg b${b.status[0]}">${b.status.toUpperCase()}</span></td><td><div style="display:flex;gap:4px;"><button class="btn btn-gray btn-sm" onclick="viewBk('${b.id}')"><i class="fas fa-eye"></i></button>${cc ? `<button class="btn btn-red btn-sm" onclick="confCancel('${b.id}')"><i class="fas fa-times"></i></button>` : ''}</div></td></tr>`;
+  }).join('');
+  el.innerHTML = `<div class="card"><div class="tw"><table><thead><tr><th>Date</th><th>Room</th><th>User</th><th>Purpose</th><th>Type</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+// ── ANALYTICS ──────────────────────────────────────────────────────────────
+let _charts = [];
+async function pgAn() {
+  if (!isAdm()) return;
+  try {
+    const d = await API.get('/analytics/summary');
+    let sh = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:16px;">';
+    sh += stC('Total Bookings', d.total, 'fa-calendar', '#eff6ff', 'var(--blue)');
+    sh += stC('Approved', d.approved, 'fa-check', '#f0fdf4', 'var(--green)');
+    sh += stC('Pending', d.pending, 'fa-clock', '#fef3c7', 'var(--orange)');
+    sh += stC('Cancelled/Rejected', d.cancelled_rejected, 'fa-times', '#fef2f2', 'var(--red)');
+    sh += stC('Food Requests', d.food_requests, 'fa-utensils', '#faf5ff', 'var(--purple)');
+    sh += '</div>';
+    document.getElementById('MC').innerHTML = sh + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="g2c"><div class="card cb"><div style="font-weight:700;font-size:.82rem;margin-bottom:11px;">Room Utilization</div><canvas id="ch1" height="200"></canvas></div><div class="card cb"><div style="font-weight:700;font-size:.82rem;margin-bottom:11px;">Meeting Types</div><canvas id="ch2" height="200"></canvas></div><div class="card cb"><div style="font-weight:700;font-size:.82rem;margin-bottom:11px;">Peak Hours</div><canvas id="ch3" height="200"></canvas></div><div class="card cb"><div style="font-weight:700;font-size:.82rem;margin-bottom:11px;">Monthly Trend</div><canvas id="ch4" height="200"></canvas></div></div>';
+    _charts.forEach(c => c.destroy()); _charts = [];
+    _charts.push(new Chart(document.getElementById('ch1'), { type: 'bar', data: { labels: d.roomStats.map(r => r.name), datasets: [{ label: 'Bookings', data: d.roomStats.map(r => r.booking_count), backgroundColor: d.roomStats.map(r => r.color+'99'), borderColor: d.roomStats.map(r => r.color), borderWidth: 2, borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } } } } }));
+    _charts.push(new Chart(document.getElementById('ch2'), { type: 'doughnut', data: { labels: ['Internal','External'], datasets: [{ data: [d.internal, d.external], backgroundColor: ['#3d6ce7','#7c3aed'], hoverOffset: 8 }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } }, cutout: '60%' } }));
+    _charts.push(new Chart(document.getElementById('ch3'), { type: 'line', data: { labels: d.peakHours.map(h => h.hour), datasets: [{ label: 'Bookings', data: d.peakHours.map(h => h.count), borderColor: '#3d6ce7', backgroundColor: '#3d6ce720', tension: .4, fill: true, pointBackgroundColor: '#3d6ce7', pointRadius: 4 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } } } } }));
+    _charts.push(new Chart(document.getElementById('ch4'), { type: 'bar', data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], datasets: [{ label: 'Bookings', data: (() => { const mc = Array(12).fill(0); d.monthRows.forEach(r => { const m = +r.month.split('-')[1]-1; mc[m] = r.c; }); return mc; })(), backgroundColor: '#3d6ce788', borderColor: '#3d6ce7', borderWidth: 2, borderRadius: 6 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } } } } }));
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+// ── EXPORT ─────────────────────────────────────────────────────────────────
+async function pgEx() {
+  if (!isAdm()) return;
+  document.getElementById('MC').innerHTML = `<div style="max-width:560px;"><div class="card cb"><div style="font-weight:700;font-size:.9rem;margin-bottom:6px;display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:7px;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;"><i class="fas fa-download"></i></div>Export & Reports</div><p style="color:var(--gray);font-size:.78rem;margin-bottom:18px;">Download booking records or generate a PDF analytics report.</p><div style="display:flex;flex-direction:column;gap:10px;">
+    <div style="background:var(--bg);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;"><div><div style="font-weight:700;font-size:.84rem;">📄 CSV Format</div><div style="font-size:.72rem;color:var(--gray);margin-top:2px;">Plain text, open in any spreadsheet</div></div><button class="btn btn-blue" onclick="expCSV()"><i class="fas fa-file-csv"></i> Export CSV</button></div>
+    <div style="background:var(--bg);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;"><div><div style="font-weight:700;font-size:.84rem;">📊 Excel Format</div><div style="font-size:.72rem;color:var(--gray);margin-top:2px;">Formatted .xlsx with column widths</div></div><button class="btn btn-grn" onclick="expXLSX()"><i class="fas fa-file-excel"></i> Export Excel</button></div>
+    <div style="background:var(--bg);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;"><div><div style="font-weight:700;font-size:.84rem;">📋 Analytics PDF Report</div><div style="font-size:.72rem;color:var(--gray);margin-top:2px;">Print-ready summary with charts and stats</div></div><button class="btn btn-red" style="background:#dc2626;" onclick="expPDF()"><i class="fas fa-file-pdf"></i> Export PDF</button></div>
+  </div></div></div>`;
+}
+
+async function expPDF() {
+  try {
+    const d = await API.get('/analytics/summary');
+    const rows = await API.get('/analytics/export');
+    const today = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+
+    const roomRows = d.roomStats.map(r => `<tr><td>${E(r.name)}</td><td style="text-align:center;font-weight:700;">${r.booking_count}</td></tr>`).join('');
+    const statusData = [
+      { l: 'Approved', v: d.approved, c: '#16a34a' },
+      { l: 'Pending',  v: d.pending,  c: '#d97706' },
+      { l: 'Cancelled/Rejected', v: d.cancelled_rejected, c: '#dc2626' },
+    ];
+    const statRows = statusData.map(s => `<tr><td>${s.l}</td><td style="text-align:center;font-weight:700;color:${s.c};">${s.v}</td><td style="text-align:right;">${d.total ? Math.round(s.v/d.total*100) : 0}%</td></tr>`).join('');
+    const recentRows = rows.slice(0, 20).map(r =>
+      `<tr><td>${r.date}</td><td>${E(r.booked_by)}</td><td>${E(r.room)}</td><td>${r.start_time}–${r.end_time}</td><td>${r.meeting_type}</td><td style="color:${r.status==='approved'?'#16a34a':r.status==='pending'?'#d97706':'#dc2626'};font-weight:600;">${r.status}</td></tr>`
+    ).join('');
+
+    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/>
+    <title>SLMG MRB Report – ${today}</title>
+    <style>
+      *{margin:0;padding:0;box-sizing:border-box;}
+      body{font-family:'Segoe UI',Arial,sans-serif;color:#1a1d2e;padding:32px;}
+      .header{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:2px solid #e2e8f0;margin-bottom:24px;}
+      .header img{height:48px;}
+      .header-right{text-align:right;}
+      h1{font-size:1.4rem;font-weight:800;color:#0f172a;}
+      .subtitle{color:#64748b;font-size:.8rem;margin-top:2px;}
+      .section{margin-bottom:28px;}
+      .section-title{font-size:.9rem;font-weight:700;color:#0f172a;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:6px;}
+      .stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+      .stat-box{background:#f8fafc;border-radius:8px;padding:12px;text-align:center;border:1px solid #e2e8f0;}
+      .stat-val{font-size:1.6rem;font-weight:800;}
+      .stat-lbl{font-size:.65rem;color:#64748b;margin-top:3px;}
+      table{width:100%;border-collapse:collapse;font-size:.77rem;}
+      th{background:#f1f5f9;padding:7px 10px;text-align:left;font-weight:700;font-size:.65rem;text-transform:uppercase;letter-spacing:.04em;color:#64748b;}
+      td{padding:7px 10px;border-bottom:1px solid #f1f5f9;}
+      .footer{text-align:center;color:#94a3b8;font-size:.7rem;margin-top:32px;padding-top:12px;border-top:1px solid #e2e8f0;}
+      @media print{body{padding:20px;}.no-print{display:none;}}
+    </style></head><body>
+    <div class="header">
+      <div><h1>Meeting Room Booking Report</h1><div class="subtitle">SLMG Beverages · Generated on ${today}</div></div>
+      <div class="header-right"><div style="font-size:.72rem;color:#64748b;">Total Records: ${rows.length}</div></div>
+    </div>
+    <div class="section">
+      <div class="section-title">📊 Summary</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" style="color:#3d6ce7;">${d.total}</div><div class="stat-lbl">Total</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#16a34a;">${d.approved}</div><div class="stat-lbl">Approved</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#d97706;">${d.pending}</div><div class="stat-lbl">Pending</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#dc2626;">${d.cancelled_rejected}</div><div class="stat-lbl">Cancelled</div></div>
+        <div class="stat-box"><div class="stat-val" style="color:#7c3aed;">${d.food_requests}</div><div class="stat-lbl">Food Req.</div></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;">
+      <div class="section" style="margin-bottom:0;"><div class="section-title">🏢 Room Utilization</div><table><thead><tr><th>Room</th><th style="text-align:center;">Bookings</th></tr></thead><tbody>${roomRows}</tbody></table></div>
+      <div class="section" style="margin-bottom:0;"><div class="section-title">📋 By Status</div><table><thead><tr><th>Status</th><th style="text-align:center;">Count</th><th style="text-align:right;">%</th></tr></thead><tbody>${statRows}</tbody></table></div>
+    </div>
+    <div class="section">
+      <div class="section-title">📅 Recent Bookings (last 20)</div>
+      <table><thead><tr><th>Date</th><th>User</th><th>Room</th><th>Time</th><th>Type</th><th>Status</th></tr></thead><tbody>${recentRows}</tbody></table>
+    </div>
+    <div class="footer">SLMG Beverages – Meeting Room Booking System · Confidential</div>
+    </body></html>`;
+
+    const w = window.open('', '_blank');
+    w.document.write(html);
+    w.document.close();
+    setTimeout(() => w.print(), 500);
+    toast('PDF report opened — use Print → Save as PDF', 'success');
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+// ── EMAIL LOG ──────────────────────────────────────────────────────────────
+async function pgEmailLog() {
+  if (!isAdm()) return;
+  try {
+    const logs = await API.get('/settings/email-log');
+    const typeColor = { new_booking_admin: '#3d6ce7', approved: '#16a34a', rejected: '#dc2626', cancelled_admin: '#64748b', cancelled_user: '#64748b', reminder: '#d97706', guest_invite: '#7c3aed', test: '#0ea5e9' };
+    const rows = logs.map(l => {
+      const c = typeColor[l.type] || '#64748b';
+      return `<tr><td style="font-size:.7rem;color:var(--gray);">${new Date(l.sent_at).toLocaleString('en-IN')}</td><td><span style="background:${c}18;color:${c};padding:2px 7px;border-radius:20px;font-size:.65rem;font-weight:700;">${l.type}</span></td><td style="font-size:.76rem;">${E(l.recipient)}</td><td style="font-size:.74rem;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${E(l.subject)}</td><td><span class="bdg ${l.status === 'sent' ? 'ba' : 'br'}">${l.status}</span></td>${l.error ? `<td style="color:var(--red);font-size:.68rem;">${E(l.error)}</td>` : '<td></td>'}</tr>`;
+    }).join('');
+    document.getElementById('MC').innerHTML = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">Email Log <span style="font-size:.76rem;font-weight:400;color:var(--gray);">(last ${logs.length})</span></div></div>
+    ${!logs.length ? '<div class="card"><div class="empty"><i class="fas fa-envelope"></i><p>No emails sent yet.</p></div></div>' :
+    `<div class="card"><div class="tw"><table><thead><tr><th>Sent At</th><th>Type</th><th>Recipient</th><th>Subject</th><th>Status</th><th>Error</th></tr></thead><tbody>${rows}</tbody></table></div></div>`}`;
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+async function expCSV() {
+  try {
+    const rows = await API.get('/analytics/export');
+    const headers = Object.keys(rows[0] || {});
+    const csv = [headers.join(','), ...rows.map(r => headers.map(k => `"${String(r[k] || '').replace(/"/g, '""')}"`).join(','))].join('\n');
+    dlFile(csv, 'bookings_' + td() + '.csv', 'text/csv');
+    toast(`CSV exported! (${rows.length} rows)`, 'success');
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+async function expXLSX() {
+  if (!window.XLSX) { toast('XLSX library not loaded.', 'error'); return; }
+  try {
+    const rows = await API.get('/analytics/export');
+    if (!rows.length) { toast('No data to export.', 'warning'); return; }
+    const headers = Object.keys(rows[0]);
+    const data = [headers, ...rows.map(r => headers.map(k => r[k]))];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = headers.map(h => ({ wch: Math.max(h.length + 2, 12) }));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Bookings');
+    XLSX.writeFile(wb, 'bookings_' + td() + '.xlsx');
+    toast(`Excel exported! (${rows.length} rows)`, 'success');
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+function dlFile(content, name, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([content], { type })); a.download = name; a.click(); }
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── WAITLIST PAGE ─────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+async function pgWaitlist() {
+  try {
+    const list = await API.get('/waitlist');
+    let h = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">My Waitlist <span style="font-size:.76rem;font-weight:400;color:var(--gray);">(${list.length})</span></div><button class="btn btn-blue" onclick="showJoinWaitlist()"><i class="fas fa-plus"></i> Join Waitlist</button></div>`;
+    if (!list.length) {
+      h += `<div class="card"><div class="empty" style="padding:48px;"><i class="fas fa-clock" style="font-size:2rem;opacity:.2;display:block;margin-bottom:10px;"></i><p style="font-weight:600;margin-bottom:4px;">No waitlist entries</p><p style="font-size:.78rem;color:var(--gray);">Join a waitlist for a slot that is currently booked — you'll be notified when it opens.</p><button class="btn btn-blue" style="margin-top:14px;" onclick="showJoinWaitlist()"><i class="fas fa-plus"></i> Join Waitlist</button></div></div>`;
+    } else {
+      const rows = list.map(w => `<tr>
+        <td><strong>${fd(w.date)}</strong></td>
+        <td><span style="color:${w.room_color};font-weight:700;">${E(w.room_name)}</span><br><span style="font-size:.68rem;color:var(--gray);">${E(w.room_floor||'')}</span></td>
+        <td style="font-size:.74rem;">${ft(w.start_time)} – ${ft(w.end_time)}</td>
+        <td style="font-size:.74rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${E(w.purpose)}</td>
+        <td><span class="bdg ${w.notified ? 'ba' : 'bc'}">${w.notified ? '🔔 Notified' : '⏳ Waiting'}</span></td>
+        <td><button class="btn btn-red btn-sm" onclick="leaveWaitlist('${w.id}')"><i class="fas fa-times"></i> Leave</button></td>
+      </tr>`).join('');
+      h += `<div class="card"><div class="tw"><table><thead><tr><th>Date</th><th>Room</th><th>Time Slot</th><th>Purpose</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+    }
+    document.getElementById('MC').innerHTML = h;
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+async function showJoinWaitlist() {
+  const rooms = (await getRooms()).filter(r => !r.blocked);
+  let ro = '<option value="">Select room</option>' + rooms.map(r => `<option value="${r.id}">${E(r.name)} – ${E(r.floor||'')}</option>`).join('');
+  let to = '<option value="">Select</option>';
+  for (let h = 9; h < 20; h++) for (let m = 0; m < 60; m += 30) { const t = m2t(h*60+m); to += `<option value="${t}">${ft(t)}</option>`; }
+  modal('Join Waitlist', `<div class="al al-i" style="margin-bottom:12px;"><i class="fas fa-info-circle"></i>You'll get an email + notification when this slot becomes available.</div>
+    <div id="wlErr"></div>
+    <div class="fg"><label class="lbl">Room *</label><select id="wlR" class="sel">${ro}</select></div>
+    <div class="fg"><label class="lbl">Date *</label><input type="date" id="wlD" class="inp" min="${td()}"/></div>
+    <div class="row2">
+      <div class="fg"><label class="lbl">Start Time *</label><select id="wlS" class="sel">${to}</select></div>
+      <div class="fg"><label class="lbl">End Time *</label><select id="wlE" class="sel">${to}</select></div>
+    </div>
+    <div class="fg"><label class="lbl">Purpose *</label><input id="wlP" class="inp" placeholder="Why you need this slot"/></div>`,
+  [{ l:'Cancel', c:'btn-gray', f:closeModal }, { l:'Join Waitlist', c:'btn-blue', f: async () => {
+    const room_id=document.getElementById('wlR').value, date=document.getElementById('wlD').value,
+          start_time=document.getElementById('wlS').value, end_time=document.getElementById('wlE').value,
+          purpose=document.getElementById('wlP').value.trim();
+    if (!room_id||!date||!start_time||!end_time||!purpose) { mErr('wlErr','All fields required.'); return; }
+    try { await API.post('/waitlist', {room_id,date,start_time,end_time,purpose}); closeModal(); toast('Added to waitlist!','success'); pgWaitlist(); }
+    catch(err) { mErr('wlErr',err.message); }
+  }}]);
+}
+
+async function leaveWaitlist(id) {
+  modal('Leave Waitlist','<p style="color:var(--gray);font-size:.82rem;">Remove yourself from this waitlist entry?</p>',
+    [{ l:'Keep', c:'btn-gray', f:closeModal }, { l:'Remove', c:'btn-red', f: async () => {
+      try { await API.delete('/waitlist/'+id); closeModal(); toast('Removed.','info'); pgWaitlist(); }
+      catch(err) { toast(err.message,'error'); }
+    }}]);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── AMENITY REQUESTS PAGE ─────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+async function pgAmenities() {
+  try {
+    const [list, bks] = await Promise.all([API.get('/amenities'), API.get('/bookings')]);
+    const activeBks = bks.filter(b => b.status === 'approved' && b.date >= td());
+    const AMENITY_OPTIONS = ['Projector','Whiteboard','Video Call Setup','Microphone','Speakers','Laptop','Extension Cord','Flip Chart','Markers','Water/Tea','Air Freshener','Extra Chairs'];
+
+    let h = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">Amenity Requests <span style="font-size:.76rem;font-weight:400;color:var(--gray);">(${list.length})</span></div><button class="btn btn-blue" onclick="showRequestAmenity()"><i class="fas fa-plus"></i> New Request</button></div>`;
+
+    if (!list.length) {
+      h += `<div class="card"><div class="empty" style="padding:48px;"><i class="fas fa-tools" style="font-size:2rem;opacity:.2;display:block;margin-bottom:10px;"></i><p style="font-weight:600;margin-bottom:4px;">No amenity requests</p><p style="font-size:.78rem;color:var(--gray);">Request items like projectors, whiteboards, catering for your meetings.</p><button class="btn btn-blue" style="margin-top:14px;" onclick="showRequestAmenity()"><i class="fas fa-plus"></i> New Request</button></div></div>`;
+    } else {
+      const statusColor = { pending:'var(--orange)', approved:'var(--green)', rejected:'var(--red)' };
+      const rows = list.map(ar => {
+        const items = Array.isArray(ar.items) ? ar.items.join(', ') : ar.items;
+        const isAdmin = isAdm();
+        return `<tr>
+          <td><div style="font-weight:600;font-size:.78rem;">${E(ar.room_name)}</div><div style="font-size:.68rem;color:var(--gray);">${fd(ar.date)} · ${ft(ar.start_time)}–${ft(ar.end_time)}</div></td>
+          ${isAdmin ? `<td style="font-size:.76rem;">${E(ar.user_name)}</td>` : ''}
+          <td style="font-size:.74rem;max-width:180px;">${E(items)}</td>
+          <td style="font-size:.72rem;color:var(--gray);">${E(ar.notes||'—')}</td>
+          <td><span class="bdg" style="background:${statusColor[ar.status]}18;color:${statusColor[ar.status]};">${ar.status.toUpperCase()}</span></td>
+          <td>${ar.admin_note ? `<span style="font-size:.68rem;color:var(--gray);">${E(ar.admin_note)}</span>` : ''}
+          ${isAdmin && ar.status==='pending' ? `<div style="display:flex;gap:4px;margin-top:4px;"><button class="btn btn-grn btn-sm" onclick="respondAmenity('${ar.id}','approved')">✓ Approve</button><button class="btn btn-red btn-sm" onclick="respondAmenity('${ar.id}','rejected')">✗ Reject</button></div>` : ''}</td>
+        </tr>`;
+      }).join('');
+      const adminCol = isAdm() ? '<th>User</th>' : '';
+      h += `<div class="card"><div class="tw"><table><thead><tr><th>Meeting</th>${adminCol}<th>Requested Items</th><th>Notes</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+    }
+    document.getElementById('MC').innerHTML = h;
+  } catch (err) { document.getElementById('MC').innerHTML = `<div class="al al-e">${E(err.message)}</div>`; }
+}
+
+async function showRequestAmenity() {
+  const bks = (await API.get('/bookings')).filter(b => b.status === 'approved' && b.date >= td());
+  if (!bks.length) { modal('No Active Bookings','<p style="color:var(--gray);">You have no upcoming approved bookings to request amenities for.</p>',[{l:'Close',c:'btn-gray',f:closeModal}]); return; }
+  const ITEMS = ['Projector','Whiteboard','Video Call Setup','Microphone','Speakers','Laptop','Extension Cord','Flip Chart','Markers','Water/Tea','Air Freshener','Extra Chairs'];
+  const bkOpts = bks.map(b => `<option value="${b.id}">${E(b.room_name)} – ${fd(b.date)} ${ft(b.start_time)}</option>`).join('');
+  const itemChks = ITEMS.map(i => `<label style="display:flex;align-items:center;gap:6px;padding:5px 8px;border:1.5px solid var(--border);border-radius:7px;font-size:.76rem;cursor:pointer;transition:all .1s;" onclick="toggleItem(this)">
+    <input type="checkbox" value="${i}" style="display:none;"/><span>${i}</span></label>`).join('');
+
+  modal('Request Amenities', `<div id="arErr"></div>
+    <div class="fg"><label class="lbl">Meeting *</label><select id="arBk" class="sel">${bkOpts}</select></div>
+    <div class="fg"><label class="lbl">Items Needed *</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;" id="itemGrid">${itemChks}</div></div>
+    <div class="fg"><label class="lbl">Additional Notes</label><textarea id="arNotes" class="ta" placeholder="Any special instructions..."></textarea></div>`,
+  [{ l:'Cancel', c:'btn-gray', f:closeModal }, { l:'Submit Request', c:'btn-blue', f: async () => {
+    const booking_id = document.getElementById('arBk').value;
+    const items = [...document.querySelectorAll('#itemGrid input:checked')].map(c => c.value);
+    const notes = document.getElementById('arNotes').value.trim();
+    if (!items.length) { mErr('arErr','Select at least one item.'); return; }
+    try { await API.post('/amenities', {booking_id, items, notes}); closeModal(); toast('Request submitted!','success'); pgAmenities(); }
+    catch(err) { mErr('arErr', err.message); }
+  }}]);
+}
+
+function toggleItem(label) {
+  const chk = label.querySelector('input');
+  chk.checked = !chk.checked;
+  label.style.borderColor = chk.checked ? 'var(--blue)' : 'var(--border)';
+  label.style.background = chk.checked ? 'var(--blue-l)' : '';
+  label.style.color = chk.checked ? 'var(--blue)' : '';
+}
+
+function respondAmenity(id, status) {
+  const isApprove = status === 'approved';
+  modal(`${isApprove ? 'Approve' : 'Reject'} Amenity Request`,
+    `<div id="arResErr"></div>${!isApprove ? '<div class="fg"><label class="lbl">Reason / Note</label><textarea id="arNote" class="ta" placeholder="Optional note to user..."></textarea></div>' : '<p style="color:var(--gray);font-size:.82rem;">Approve this amenity request?</p>'}`,
+  [{ l:'Cancel', c:'btn-gray', f:closeModal }, { l: isApprove?'Approve':'Reject', c: isApprove?'btn-grn':'btn-red', f: async () => {
+    const admin_note = (document.getElementById('arNote')||{}).value||'';
+    try { await API.patch('/amenities/'+id+'/respond', {status, admin_note}); closeModal(); toast(isApprove?'Approved!':'Rejected.','success'); renderNav(); pgAmenities(); }
+    catch(err) { mErr('arResErr', err.message); }
+  }}]);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── INTEGRATIONS PAGE (Google Calendar + Slack + WhatsApp) ───────────────
+// ══════════════════════════════════════════════════════════════════════════
+async function pgIntegrations() {
+  if (!isAdm()) return;
+  let gcalStatus = { configured: false, auth_url: null };
+  let cfg = {};
+  try { [gcalStatus, cfg] = await Promise.all([API.get('/gcal/status'), API.get('/settings')]); } catch {}
+
+  const slackOn = !!(cfg.slack_webhook);
+  const waOn    = !!(cfg.twilio_sid && cfg.twilio_token);
+
+  document.getElementById('MC').innerHTML = `<div style="max-width:680px;display:flex;flex-direction:column;gap:16px;">
+
+    <!-- Google Calendar -->
+    <div class="card cb">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:42px;height:42px;border-radius:10px;background:#fff;border:1.5px solid #e2e8f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="24" height="24" viewBox="0 0 24 24"><path fill="#4285F4" d="M19.5 3h-15A1.5 1.5 0 003 4.5v15A1.5 1.5 0 004.5 21h15a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0019.5 3zm-10 13H7v-6h2.5v6zm5 0h-2.5v-6H14v6zm2.5-8h-10V6h10v2z"/></svg>
+        </div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:.9rem;">Google Calendar</div><div style="font-size:.72rem;color:var(--gray);">Auto-sync approved bookings to your Google Calendar</div></div>
+        <span class="bdg ${gcalStatus.configured ? 'ba' : 'bc'}">${gcalStatus.configured ? '✅ Connected' : '⚪ Not Connected'}</span>
+      </div>
+      <div id="gcalErr"></div>
+      <div class="row2">
+        <div class="fg"><label class="lbl">Google Client ID</label><input id="gcalCid" class="inp" value="${E(cfg.gcal_client_id||'')}" placeholder="xxxx.apps.googleusercontent.com"/></div>
+        <div class="fg"><label class="lbl">Google Client Secret</label><input id="gcalSec" class="inp" type="password" value="${cfg.gcal_client_secret ? '••••••••' : ''}" placeholder="GOCSPX-xxxxxx"/></div>
+      </div>
+      <div class="fg"><label class="lbl">Calendar ID <span style="color:var(--gray);font-weight:400;">(use "primary" for default calendar)</span></label><input id="gcalCal" class="inp" value="${E(cfg.gcal_calendar_id||'primary')}" placeholder="primary or calendar@group.calendar.google.com"/></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <button class="btn btn-blue" onclick="saveGcal()"><i class="fas fa-save"></i> Save & Get Auth Link</button>
+        ${gcalStatus.auth_url ? `<a href="${gcalStatus.auth_url}" target="_blank" class="btn btn-grn"><i class="fab fa-google"></i> Connect Google Account</a>` : ''}
+        ${gcalStatus.configured ? '<span class="bdg ba">✅ Calendar sync active — new approvals sync automatically</span>' : ''}
+      </div>
+      <div class="al al-i" style="margin-top:12px;"><i class="fas fa-info-circle"></i><div style="font-size:.72rem;">Setup: <a href="https://console.cloud.google.com" target="_blank" style="color:var(--blue);">console.cloud.google.com</a> → APIs & Services → Credentials → Create OAuth 2.0 Client ID → Add redirect URI: <code>${window.location.origin}/api/gcal/callback</code></div></div>
+    </div>
+
+    <!-- Slack -->
+    <div class="card cb">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:42px;height:42px;border-radius:10px;background:#611f69;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52zm1.271 0a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834zm0 1.271a2.527 2.527 0 012.521 2.521 2.527 2.527 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312zm10.122 2.521a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.528 2.528 0 01-2.522 2.521h-2.522V8.834zm-1.268 0a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312zm-2.523 10.122a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52zm0-1.268a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z"/></svg>
+        </div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:.9rem;">Slack Notifications</div><div style="font-size:.72rem;color:var(--gray);">Send booking events to a Slack channel via Incoming Webhook</div></div>
+        <span class="bdg ${slackOn ? 'ba' : 'bc'}">${slackOn ? '✅ Active' : '⚪ Off'}</span>
+      </div>
+      <div id="slackErr"></div>
+      <div class="fg"><label class="lbl">Webhook URL</label><input id="slackWh" class="inp" value="${E(cfg.slack_webhook||'')}" placeholder="https://hooks.slack.com/services/T.../B.../xxx"/></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-blue" onclick="saveSlack()"><i class="fas fa-save"></i> Save</button>
+        ${slackOn ? '<button class="btn btn-gray" onclick="testSlack()"><i class="fas fa-paper-plane"></i> Send Test</button>' : ''}
+        ${slackOn ? '<button class="btn btn-red btn-sm" onclick="clearSlack()"><i class="fas fa-trash"></i> Remove</button>' : ''}
+      </div>
+      <div class="al al-i" style="margin-top:12px;"><i class="fas fa-info-circle"></i><div style="font-size:.72rem;">Setup: <a href="https://api.slack.com/apps" target="_blank" style="color:var(--blue);">api.slack.com/apps</a> → Create App → Incoming Webhooks → Add to Channel → Copy URL</div></div>
+    </div>
+
+    <!-- WhatsApp -->
+    <div class="card cb">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        <div style="width:42px;height:42px;border-radius:10px;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 0C5.372 0 0 5.373 0 12c0 2.117.554 4.099 1.523 5.82L.051 23.98l6.336-1.447A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.626 0 11.999 0zm.001 21.818a9.81 9.81 0 01-5.012-1.371l-.36-.214-3.736.853.87-3.646-.235-.374A9.818 9.818 0 012.182 12C2.182 6.579 6.58 2.182 12 2.182c5.422 0 9.818 4.397 9.818 9.818 0 5.422-4.396 9.818-9.818 9.818z"/></svg>
+        </div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:.9rem;">WhatsApp Notifications <span style="font-size:.68rem;background:var(--orange-l);color:var(--orange);padding:2px 6px;border-radius:4px;font-weight:700;">via Twilio</span></div><div style="font-size:.72rem;color:var(--gray);">Send booking alerts to admin's WhatsApp number</div></div>
+        <span class="bdg ${waOn ? 'ba' : 'bc'}">${waOn ? '✅ Active' : '⚪ Off'}</span>
+      </div>
+      <div id="waErr"></div>
+      <div class="row2">
+        <div class="fg"><label class="lbl">Twilio Account SID</label><input id="waSid" class="inp" value="${E(cfg.twilio_sid||'')}" placeholder="ACxxxxxxxxxxxxxxxx"/></div>
+        <div class="fg"><label class="lbl">Auth Token</label><input id="waToken" class="inp" type="password" value="${cfg.twilio_token ? '••••••••' : ''}" placeholder="your_auth_token"/></div>
+        <div class="fg"><label class="lbl">From (Twilio WA number)</label><input id="waFrom" class="inp" value="${E(cfg.twilio_from||'')}" placeholder="whatsapp:+14155238886"/></div>
+        <div class="fg"><label class="lbl">To (Admin WA number)</label><input id="waTo" class="inp" value="${E(cfg.twilio_to||'')}" placeholder="whatsapp:+919876543210"/></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-blue" onclick="saveWhatsApp()"><i class="fas fa-save"></i> Save</button>
+        ${waOn ? '<button class="btn btn-red btn-sm" onclick="clearWhatsApp()"><i class="fas fa-trash"></i> Remove</button>' : ''}
+      </div>
+      <div class="al al-i" style="margin-top:12px;"><i class="fas fa-info-circle"></i><div style="font-size:.72rem;">Setup: <a href="https://console.twilio.com" target="_blank" style="color:var(--blue);">console.twilio.com</a> → Messaging → Try WhatsApp → Sandbox → Join with code → use sandbox number as "From"</div></div>
+    </div>
+
+  </div>`;
+}
+
+// Google Calendar helpers
+async function saveGcal() {
+  const gcal_client_id = document.getElementById('gcalCid').value.trim();
+  const gcal_client_secret = document.getElementById('gcalSec').value.trim();
+  const gcal_calendar_id = document.getElementById('gcalCal').value.trim() || 'primary';
+  if (!gcal_client_id) { mErr('gcalErr','Client ID required.'); return; }
+  try {
+    const r = await API.put('/gcal/settings', { gcal_client_id, gcal_client_secret: gcal_client_secret === '••••••••' ? undefined : gcal_client_secret, gcal_calendar_id });
+    toast('Saved! Click "Connect Google Account" to authorize.', 'success');
+    pgIntegrations();
+  } catch(err) { mErr('gcalErr', err.message); }
+}
+
+// Slack helpers
+async function saveSlack() {
+  const slack_webhook = document.getElementById('slackWh').value.trim();
+  if (!slack_webhook) { mErr('slackErr','Webhook URL required.'); return; }
+  try { await API.put('/settings', { slack_webhook }); toast('Slack configured!','success'); pgIntegrations(); }
+  catch(err) { mErr('slackErr', err.message); }
+}
+async function clearSlack() {
+  await API.put('/settings', { slack_webhook:'' });
+  toast('Slack removed.','info'); pgIntegrations();
+}
+async function testSlack() {
+  try { await API.post('/settings/test-slack',{}); toast('Test message sent to Slack!','success'); }
+  catch(err) { toast(err.message,'error'); }
+}
+
+// WhatsApp helpers
+async function saveWhatsApp() {
+  const twilio_sid   = document.getElementById('waSid').value.trim();
+  const twilio_token = document.getElementById('waToken').value.trim();
+  const twilio_from  = document.getElementById('waFrom').value.trim();
+  const twilio_to    = document.getElementById('waTo').value.trim();
+  if (!twilio_sid||!twilio_from||!twilio_to) { mErr('waErr','SID, From and To required.'); return; }
+  const payload = { twilio_sid, twilio_from, twilio_to };
+  if (twilio_token !== '••••••••') payload.twilio_token = twilio_token;
+  try { await API.put('/settings', payload); toast('WhatsApp configured!','success'); pgIntegrations(); }
+  catch(err) { mErr('waErr', err.message); }
+}
+async function clearWhatsApp() {
+  await API.put('/settings', { twilio_sid:'', twilio_token:'', twilio_from:'', twilio_to:'' });
+  toast('WhatsApp removed.','info'); pgIntegrations();
+}
+
+
+// ── STARTUP ────────────────────────────────────────────────────────────────
+(async function () {
+  applyTheme(localStorage.getItem('mrb_theme') || 'default');
+
+  const token     = localStorage.getItem('mrb_token');
+  const savedUser = localStorage.getItem('mrb_user');
+  if (token && savedUser) {
+    try {
+      CU = JSON.parse(savedUser);
+      const fresh = await API.get('/auth/me');
+      CU = { ...CU, ...fresh };
+      localStorage.setItem('mrb_user', JSON.stringify(CU));
+      document.getElementById('LP').style.display = 'none';
+      document.getElementById('AP').style.display = 'block';
+      await renderNav(); updTop(); updSU(); nav('dashboard'); updND();
+      if (CU.role === 'admin') loadEmailConfig();
+    } catch {
+      clearUser();
+    }
+  }
+})();
+
+</script>
+</body>
+</html>

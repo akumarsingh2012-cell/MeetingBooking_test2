@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Meeting Check-In – SLMG</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:linear-gradient(135deg,#0f172a 0%,#1e3a6e 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:420px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.logo-box{background:#fff;border:2px solid #e2e8f0;border-radius:12px;padding:12px 20px;display:inline-block;margin-bottom:20px;}
+.logo-box img{height:44px;display:block;}
+.icon{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 16px;}
+.icon.loading{background:#eff6ff;}
+.icon.success{background:#f0fdf4;}
+.icon.error{background:#fef2f2;}
+.icon.already{background:#fef3c7;}
+h2{font-size:1.3rem;font-weight:800;margin-bottom:6px;color:#1a1d2e;}
+.sub{color:#64748b;font-size:.82rem;margin-bottom:20px;}
+.info-card{background:#f8fafc;border-radius:12px;padding:16px;text-align:left;margin-bottom:20px;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:.8rem;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:#64748b;font-weight:500;}
+.info-val{color:#1a1d2e;font-weight:700;}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700;}
+.badge-success{background:#f0fdf4;color:#16a34a;}
+.badge-warn{background:#fef3c7;color:#92400e;}
+.badge-err{background:#fef2f2;color:#dc2626;}
+.btn{display:block;width:100%;padding:12px;border-radius:10px;font-size:.85rem;font-weight:700;border:none;cursor:pointer;text-decoration:none;margin-top:12px;}
+.btn-blue{background:#3d6ce7;color:#fff;}
+.btn-gray{background:#f1f5f9;color:#64748b;}
+.spin{display:inline-block;width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:#3d6ce7;border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.timestamp{font-size:.72rem;color:#94a3b8;margin-top:8px;}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="logo-box">
+    <img src="/slmg-logo.webp" alt="SLMG Beverages" onerror="this.parentElement.innerHTML='<strong style=color:#1a1d2e;font-size:1rem;>SLMG Beverages</strong>'"/>
+  </div>
+  <div id="content">
+    <div class="icon loading"><div class="spin"></div></div>
+    <h2>Verifying Check-In...</h2>
+    <p class="sub">Please wait</p>
+  </div>
+</div>
+
+<script>
+const token = location.pathname.split('/checkin/')[1];
+
+async function doCheckin() {
+  const el = document.getElementById('content');
+  try {
+    const res = await fetch('/api/bookings/checkin/' + token);
+    const data = await res.json();
+
+    if (!res.ok) {
+      el.innerHTML = `
+        <div class="icon error">❌</div>
+        <h2>Check-In Failed</h2>
+        <p class="sub">${data.error || 'Something went wrong'}</p>
+        <a href="/" class="btn btn-gray">Go to App</a>`;
+      return;
+    }
+
+    if (data.already) {
+      const b = data.booking;
+      el.innerHTML = `
+        <div class="icon already">⚠️</div>
+        <h2>Already Checked In</h2>
+        <p class="sub">This booking was already checked in.</p>
+        ${bookingCard(b)}
+        <p class="timestamp">Checked in at: ${new Date(data.checkin_at).toLocaleString('en-IN')}</p>
+        <a href="/" class="btn btn-gray" style="margin-top:16px;">Open App</a>`;
+      return;
+    }
+
+    const b = data.booking;
+    el.innerHTML = `
+      <div class="icon success">✅</div>
+      <h2>Check-In Successful!</h2>
+      <p class="sub">Welcome! Your meeting room is confirmed.</p>
+      ${bookingCard(b)}
+      <p class="timestamp">Checked in at: ${new Date().toLocaleString('en-IN')}</p>
+      <a href="/" class="btn btn-blue" style="margin-top:16px;">Open App</a>`;
+  } catch (err) {
+    el.innerHTML = `
+      <div class="icon error">❌</div>
+      <h2>Connection Error</h2>
+      <p class="sub">Could not connect to server. Please try again.</p>
+      <button onclick="doCheckin()" class="btn btn-blue">Retry</button>`;
+  }
+}
+
+function fmt(t) {
+  if (!t) return '';
+  const [h, m] = t.split(':');
+  const hh = +h, ap = hh >= 12 ? 'PM' : 'AM';
+  return (hh % 12 || 12) + ':' + m + ' ' + ap;
+}
+
+function bookingCard(b) {
+  return `<div class="info-card">
+    <div class="info-row"><span class="info-label">Room</span><span class="info-val">${b.room_name}</span></div>
+    <div class="info-row"><span class="info-label">Date</span><span class="info-val">${b.date}</span></div>
+    <div class="info-row"><span class="info-label">Time</span><span class="info-val">${fmt(b.start_time)} – ${fmt(b.end_time)}</span></div>
+    <div class="info-row"><span class="info-label">Booked by</span><span class="info-val">${b.user_name}</span></div>
+    <div class="info-row"><span class="info-label">Purpose</span><span class="info-val">${b.purpose}</span></div>
+  </div>`;
+}
+
+if (token) {
+  doCheckin();
+} else {
+  document.getElementById('content').innerHTML = `<div class="icon error">❌</div><h2>Invalid Link</h2><p class="sub">This check-in link is not valid.</p>`;
+}
+</script>
+</body>
+</html>
