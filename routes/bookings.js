@@ -222,17 +222,39 @@ router.post('/', auth, async (req, res) => {
   `).get(firstId);
 
   // Send emails + Slack + WhatsApp asynchronously (don't block response)
-try {
-  await emailSvc.sendNewBookingAdmin(formatBooking(booking));
-} catch (err) {
-  console.log("Email failed:", err.message);
-}
-  notify.slackNewBooking(formatBooking(booking)).catch(() => {});
-  notify.waNewBooking(formatBooking(booking)).catch(() => {});
-  if (status === 'approved') {
-    emailSvc.sendApproved(formatBooking(booking)).catch(() => {});
-    gcalSvc.createEvent(formatBooking(booking)).catch(() => {});
+(async () => {
+  try {
+    if (emailSvc?.sendNewBookingAdmin)
+      await emailSvc.sendNewBookingAdmin(formatBooking(booking));
+  } catch (err) {
+    console.log("Admin email failed:", err.message);
   }
+
+  try {
+    if (notify?.slackNewBooking)
+      await notify.slackNewBooking(formatBooking(booking));
+  } catch {}
+
+  try {
+    if (notify?.waNewBooking)
+      await notify.waNewBooking(formatBooking(booking));
+  } catch {}
+
+  if (status === 'approved') {
+    try {
+      if (emailSvc?.sendApproved)
+        await emailSvc.sendApproved(formatBooking(booking));
+    } catch (err) {
+      console.log("Approval email failed:", err.message);
+    }
+
+    try {
+      if (gcalSvc?.createEvent)
+        await gcalSvc.createEvent(formatBooking(booking));
+    } catch {}
+  }
+})();
+
 
   res.status(201).json({
     ...formatBooking(booking),
@@ -254,9 +276,22 @@ router.patch('/:id/cancel', auth, async (req, res) => {
 
   // Send cancellation emails
   const full = db.prepare(`SELECT b.*, u.name as user_name, u.email as user_email, r.name as room_name, r.floor as room_floor FROM bookings b JOIN users u ON u.id=b.user_id JOIN rooms r ON r.id=b.room_id WHERE b.id=?`).get(req.params.id);
-  emailSvc.sendCancelled(formatBooking(full)).catch(() => {});
-  notify.slackCancelled(formatBooking(full)).catch(() => {});
-  notify.waCancelled(formatBooking(full)).catch(() => {});
+(async () => {
+  try {
+    if (emailSvc?.sendCancelled)
+      await emailSvc.sendCancelled(formatBooking(full));
+  } catch {}
+
+  try {
+    if (notify?.slackCancelled)
+      await notify.slackCancelled(formatBooking(full));
+  } catch {}
+
+  try {
+    if (notify?.waCancelled)
+      await notify.waCancelled(formatBooking(full));
+  } catch {}
+})();
 
   res.json({ message: 'Booking cancelled' });
 });
@@ -304,10 +339,30 @@ router.patch('/:id/approve', auth, adminOnly, async (req, res) => {
 
   // Send approval email with ICS
   const full = db.prepare(`SELECT b.*, u.name as user_name, u.email as user_email, r.name as room_name, r.floor as room_floor FROM bookings b JOIN users u ON u.id=b.user_id JOIN rooms r ON r.id=b.room_id WHERE b.id=?`).get(req.params.id);
-  emailSvc.sendApproved(formatBooking(full)).catch(() => {});
-  notify.slackApproved(formatBooking(full)).catch(() => {});
-  notify.waApproved(formatBooking(full)).catch(() => {});
-  gcalSvc.createEvent(formatBooking(full)).catch(() => {});
+(async () => {
+  try {
+    if (emailSvc?.sendApproved)
+      await emailSvc.sendApproved(formatBooking(full));
+  } catch (err) {
+    console.log("Approval email failed:", err.message);
+  }
+
+  try {
+    if (notify?.slackApproved)
+      await notify.slackApproved(formatBooking(full));
+  } catch {}
+
+  try {
+    if (notify?.waApproved)
+      await notify.waApproved(formatBooking(full));
+  } catch {}
+
+  try {
+    if (gcalSvc?.createEvent)
+      await gcalSvc.createEvent(formatBooking(full));
+  } catch {}
+})();
+
 
   res.json({ message: 'Approved', auto_rejected: autoRejected });
 });
@@ -325,9 +380,23 @@ router.patch('/:id/reject', auth, adminOnly, async (req, res) => {
   addNotification(b.user_id, 'Booking Rejected', `Reason: ${reason}`, 'error');
 
   const full2 = db.prepare(`SELECT b.*, u.name as user_name, u.email as user_email, r.name as room_name, r.floor as room_floor FROM bookings b JOIN users u ON u.id=b.user_id JOIN rooms r ON r.id=b.room_id WHERE b.id=?`).get(req.params.id);
-  emailSvc.sendRejected({ ...formatBooking(full2), rejection_reason: reason }).catch(() => {});
-  notify.slackRejected({ ...formatBooking(full2), rejection_reason: reason }).catch(() => {});
-  notify.waRejected({ ...formatBooking(full2), rejection_reason: reason }).catch(() => {});
+(async () => {
+  try {
+    if (emailSvc?.sendRejected)
+      await emailSvc.sendRejected({ ...formatBooking(full2), rejection_reason: reason });
+  } catch {}
+
+  try {
+    if (notify?.slackRejected)
+      await notify.slackRejected({ ...formatBooking(full2), rejection_reason: reason });
+  } catch {}
+
+  try {
+    if (notify?.waRejected)
+      await notify.waRejected({ ...formatBooking(full2), rejection_reason: reason });
+  } catch {}
+})();
+
 
   res.json({ message: 'Rejected' });
 });
