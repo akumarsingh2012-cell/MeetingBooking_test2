@@ -213,5 +213,6 @@ module.exports = {
   slackNewBooking, slackApproved, slackRejected, slackCancelled, slackReminder, slackWaitlistNotify, slackAmenityRequest,
   // WhatsApp
   isWhatsAppConfigured,
+  isWaConfigured: isWhatsAppConfigured, // alias used by settings route
   waNewBooking, waApproved, waRejected, waCancelled, waReminder, waWaitlistNotify,
 };

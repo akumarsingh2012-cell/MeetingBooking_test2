@@ -51,6 +51,47 @@ body.theme-dark .btn-gray{background:#263047;color:#94a3b8;border-color:#334155;
 body.theme-green{--blue:#059669;--blue-d:#047857;--blue-l:#ecfdf5;--sidebar:#052e16;}
 body.theme-green .btn-blue{background:#059669;} body.theme-green .btn-blue:hover{background:#047857;}
 body.theme-green .nb.active,.theme-green .sb-icon,.theme-green .llogo,.theme-green .av{background:#059669;}
+body.theme-green .inp:focus,.theme-green .sel:focus,.theme-green .ta:focus{border-color:#059669;box-shadow:0 0 0 3px rgba(5,150,105,.1);}
+/* Ocean/Teal */
+body.theme-ocean{--blue:#0891b2;--blue-d:#0e7490;--blue-l:#ecfeff;--sidebar:#0c1a2e;--bg:#f0f9ff;}
+body.theme-ocean .btn-blue{background:#0891b2;} body.theme-ocean .btn-blue:hover{background:#0e7490;}
+body.theme-ocean .nb.active,.theme-ocean .sb-icon,.theme-ocean .av{background:#0891b2;}
+body.theme-ocean .inp:focus,.theme-ocean .sel:focus,.theme-ocean .ta:focus{border-color:#0891b2;box-shadow:0 0 0 3px rgba(8,145,178,.1);}
+body.theme-ocean #LP{background:linear-gradient(135deg,#0c1a2e 0%,#0e4f6b 50%,#0c1a2e 100%);}
+/* Sunset/Orange */
+body.theme-sunset{--blue:#ea580c;--blue-d:#c2410c;--blue-l:#fff7ed;--sidebar:#1c0a00;--bg:#fef8f3;--border:#fed7aa;}
+body.theme-sunset .btn-blue{background:#ea580c;} body.theme-sunset .btn-blue:hover{background:#c2410c;}
+body.theme-sunset .nb.active,.theme-sunset .sb-icon,.theme-sunset .av{background:#ea580c;}
+body.theme-sunset .inp:focus,.theme-sunset .sel:focus,.theme-sunset .ta:focus{border-color:#ea580c;box-shadow:0 0 0 3px rgba(234,88,12,.1);}
+body.theme-sunset #LP{background:linear-gradient(135deg,#1c0a00 0%,#9a3412 50%,#1c0a00 100%);}
+/* Purple */
+body.theme-purple{--blue:#7c3aed;--blue-d:#6d28d9;--blue-l:#f5f3ff;--sidebar:#1e0040;--bg:#faf8ff;}
+body.theme-purple .btn-blue{background:#7c3aed;} body.theme-purple .btn-blue:hover{background:#6d28d9;}
+body.theme-purple .nb.active,.theme-purple .sb-icon,.theme-purple .av{background:#7c3aed;}
+body.theme-purple .inp:focus,.theme-purple .sel:focus,.theme-purple .ta:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+body.theme-purple #LP{background:linear-gradient(135deg,#1e0040 0%,#4c1d95 50%,#1e0040 100%);}
+/* Rose */
+body.theme-rose{--blue:#e11d48;--blue-d:#be123c;--blue-l:#fff1f2;--sidebar:#1a0010;--bg:#fdf2f4;--border:#fecdd3;}
+body.theme-rose .btn-blue{background:#e11d48;} body.theme-rose .btn-blue:hover{background:#be123c;}
+body.theme-rose .nb.active,.theme-rose .sb-icon,.theme-rose .av{background:#e11d48;}
+body.theme-rose .inp:focus,.theme-rose .sel:focus,.theme-rose .ta:focus{border-color:#e11d48;box-shadow:0 0 0 3px rgba(225,29,72,.1);}
+body.theme-rose #LP{background:linear-gradient(135deg,#1a0010 0%,#9f1239 50%,#1a0010 100%);}
+/* Midnight Navy */
+body.theme-navy{--blue:#1d4ed8;--blue-d:#1e40af;--blue-l:#eff6ff;--sidebar:#030712;--bg:#f1f5f9;}
+body.theme-navy .btn-blue{background:#1d4ed8;} body.theme-navy .btn-blue:hover{background:#1e40af;}
+body.theme-navy .nb.active,.theme-navy .sb-icon,.theme-navy .av{background:#1d4ed8;}
+body.theme-navy .inp:focus,.theme-navy .sel:focus,.theme-navy .ta:focus{border-color:#1d4ed8;box-shadow:0 0 0 3px rgba(29,78,216,.1);}
+body.theme-navy #LP{background:linear-gradient(135deg,#030712 0%,#1e3a8a 50%,#030712 100%);}
+/* Amber/Gold */
+body.theme-amber{--blue:#d97706;--blue-d:#b45309;--blue-l:#fffbeb;--sidebar:#1a0f00;--bg:#fefce8;--border:#fde68a;}
+body.theme-amber .btn-blue{background:#d97706;} body.theme-amber .btn-blue:hover{background:#b45309;}
+body.theme-amber .nb.active,.theme-amber .sb-icon,.theme-amber .av{background:#d97706;}
+body.theme-amber .inp:focus,.theme-amber .sel:focus,.theme-amber .ta:focus{border-color:#d97706;box-shadow:0 0 0 3px rgba(217,119,6,.1);}
+body.theme-amber #LP{background:linear-gradient(135deg,#1a0f00 0%,#92400e 50%,#1a0f00 100);}
+/* High Contrast */
+body.theme-hc{--blue:#000;--blue-d:#222;--blue-l:#f0f0f0;--sidebar:#000;--bg:#fff;--card:#fff;--text:#000;--border:#000;--input-border:#000;}
+body.theme-hc .btn-blue{background:#000;border:2px solid #000;} body.theme-hc .nb.active{background:#000;}
+body.theme-hc .sb-icon,.theme-hc .av{background:#000;}
 
 #LP{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f172a 0%,#1e3a6e 50%,#0f172a 100%);padding:16px;}
 body.theme-cocacola #LP{background:linear-gradient(135deg,#1a0000 0%,#8b0000 50%,#1a0000 100%);}
@@ -258,10 +299,17 @@ function toast(msg, type) {
 
 // ── THEME ──────────────────────────────────────────────────────────────────
 const THEMES = {
-  default:  { label: 'Default Blue',    swatch: '#3d6ce7' },
-  cocacola: { label: 'Coca-Cola Red',   swatch: '#cc0000' },
-  dark:     { label: 'Dark Mode',       swatch: '#1e293b' },
-  green:    { label: 'Emerald Green',   swatch: '#059669' },
+  default:  { label: 'Default Blue',   swatch: '#3d6ce7' },
+  dark:     { label: 'Dark Mode',      swatch: '#1e293b' },
+  cocacola: { label: 'Coca-Cola Red',  swatch: '#cc0000' },
+  green:    { label: 'Emerald Green',  swatch: '#059669' },
+  ocean:    { label: 'Ocean Teal',     swatch: '#0891b2' },
+  sunset:   { label: 'Sunset Orange',  swatch: '#ea580c' },
+  purple:   { label: 'Purple Grape',   swatch: '#7c3aed' },
+  rose:     { label: 'Rose Pink',      swatch: '#e11d48' },
+  navy:     { label: 'Midnight Navy',  swatch: '#1d4ed8' },
+  amber:    { label: 'Amber Gold',     swatch: '#d97706' },
+  hc:       { label: 'High Contrast',  swatch: '#000000' },
 };
 
 function applyTheme(t) {
@@ -542,11 +590,15 @@ async function showNotifs() {
 function pgTheme() {
   VIEW = 'theme';
   const cur = localStorage.getItem('mrb_theme') || 'default';
-  let h = '<div style="max-width:520px;"><div class="card cb"><div style="font-weight:700;font-size:.9rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:7px;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;"><i class="fas fa-palette"></i></div>Choose Theme</div><div style="display:flex;flex-direction:column;gap:9px;">';
+  let h = '<div style="max-width:640px;"><div class="card cb"><div style="font-weight:700;font-size:.9rem;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:7px;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;"><i class="fas fa-palette"></i></div>Choose Theme <span style="font-size:.72rem;font-weight:400;color:var(--gray);margin-left:4px;">' + Object.keys(THEMES).length + ' options</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;">';
   Object.entries(THEMES).forEach(([k, th]) => {
-    h += `<div class="theme-card${cur === k ? ' active' : ''}" onclick="applyTheme('${k}');pgTheme();"><div class="theme-swatch" style="background:${th.swatch};"></div><div><div style="font-weight:600;font-size:.82rem;">${th.label}</div></div>${cur === k ? '<i class="fas fa-check" style="margin-left:auto;color:var(--blue);"></i>' : ''}</div>`;
+    const active = cur === k;
+    h += `<div class="theme-card${active ? ' active' : ''}" onclick="applyTheme('${k}');pgTheme();" style="position:relative;overflow:hidden;">
+      <div style="width:36px;height:36px;border-radius:9px;background:${th.swatch};flex-shrink:0;display:flex;align-items:center;justify-content:center;">${active ? '<i class="fas fa-check" style="color:#fff;font-size:.75rem;"></i>' : ''}</div>
+      <div style="flex:1;"><div style="font-weight:600;font-size:.82rem;">${th.label}</div><div style="font-size:.66rem;color:var(--gray);">${k === 'dark' ? 'Easy on eyes' : k === 'hc' ? 'Accessibility' : 'Color accent'}</div></div>
+    </div>`;
   });
-  h += '</div></div></div>';
+  h += '</div><div class="al al-i" style="margin-top:14px;"><i class="fas fa-info-circle"></i>Theme changes apply instantly and persist across sessions.</div></div></div>';
   document.getElementById('MC').innerHTML = h;
 }
 
@@ -644,11 +696,18 @@ async function testEmailJS() {
 // ── DASHBOARD ──────────────────────────────────────────────────────────────
 async function pgDash() {
   try {
-    const [bks, rooms] = await Promise.all([API.get('/bookings'), getRooms()]);
-    const today = td(), now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
+    const today = td();
+    const [bks, calBks, rooms] = await Promise.all([
+      API.get('/bookings'),
+      API.get(`/bookings/calendar?year=${today.split('-')[0]}&month=${parseInt(today.split('-')[1])}`),
+      getRooms(),
+    ]);
+    const now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
     const todBk = bks.filter(b => b.date === today && !['cancelled','rejected'].includes(b.status)).sort((a,b) => a.start_time > b.start_time ? 1 : -1);
     const upcom = bks.filter(b => b.date > today && !['cancelled','rejected'].includes(b.status)).sort((a,b) => a.date > b.date ? 1 : a.start_time > b.start_time ? 1 : -1);
     const pend  = bks.filter(b => b.status === 'pending');
+    // All-rooms today schedule (from calBks, all users)
+    const todAllBk = calBks.filter(b => b.date === today && !['cancelled','rejected'].includes(b.status)).sort((a,b) => a.start_time > b.start_time ? 1 : -1);
 
     let cnt = '';
     for (let i = 0; i < todBk.length; i++) { const sm = t2m(todBk[i].start_time); if (sm > nm) { const diff = sm - nm, dh = Math.floor(diff/60), dm = diff%60; cnt = `<div class="al al-w" style="margin-bottom:16px;"><i class="fas fa-bell"></i><div>Next meeting in <strong>${dh ? dh+'h ' : ''}${dm}m</strong>: ${E(todBk[i].purpose)} @ ${E(todBk[i].room_name)} (${ft(todBk[i].start_time)})</div></div>`; break; } }
@@ -658,14 +717,20 @@ async function pgDash() {
     sh += stC('Upcoming', upcom.length, 'fa-arrow-right', '#f0fdf4', 'var(--green)');
     sh += stC('Active Rooms', rooms.filter(r => !r.blocked).length, 'fa-door-open', '#faf5ff', 'var(--purple)');
     if (isAdm()) sh += stC('Pending Approvals', pend.length, 'fa-bell', '#fef3c7', 'var(--orange)', pend.length > 0, "nav('approvals')");
+    const totalBks = bks.length, approved = bks.filter(b => b.status === 'approved').length;
+    if (!isAdm()) sh += stC('My Approved', approved, 'fa-check-circle', '#f0fdf4', 'var(--green)');
     sh += '</div>';
 
-    let rh = '<div class="card cb" style="margin-bottom:16px;"><div style="font-weight:700;font-size:.84rem;margin-bottom:10px;"><i class="fas fa-door-open" style="color:var(--blue);margin-right:6px;"></i>Room Status – Today</div><div style="display:flex;flex-wrap:wrap;gap:8px;">';
+    let rh = '<div class="card cb" style="margin-bottom:16px;"><div style="font-weight:700;font-size:.84rem;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;"><span><i class="fas fa-door-open" style="color:var(--blue);margin-right:6px;"></i>Room Status – Today</span><button class="btn btn-blue btn-sm" onclick="nav(\'newbooking\')"><i class="fas fa-plus"></i> Quick Book</button></div><div style="display:flex;flex-wrap:wrap;gap:8px;">';
     rooms.forEach(r => {
-      const rb = bks.filter(b => b.room_id === r.id && b.date === today && !['cancelled','rejected'].includes(b.status));
+      const rb = calBks.filter(b => b.room_id === r.id && b.date === today && !['cancelled','rejected'].includes(b.status));
       const busy = rb.some(b => t2m(b.start_time) <= nm && t2m(b.end_time) > nm);
-      const col = busy ? 'var(--red)' : 'var(--green)', bg = busy ? '#fef2f2' : '#f0fdf4', brd = busy ? '#fecaca' : '#bbf7d0';
-      rh += `<div style="background:${bg};border:1.5px solid ${brd};border-radius:9px;padding:8px 12px;min-width:115px;"><div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;"><div style="width:6px;height:6px;border-radius:50%;background:${col};flex-shrink:0;"></div><span style="font-weight:700;font-size:.73rem;">${E(r.name)}</span></div><div style="font-size:.66rem;color:${col};font-weight:600;">${busy ? 'In Use' : 'Available'}</div><div style="font-size:.62rem;color:var(--gray);">${rb.length} booking${rb.length !== 1 ? 's' : ''}</div>${r.blocked ? '<div style="font-size:.62rem;color:var(--red);font-weight:700;">BLOCKED</div>' : ''}</div>`;
+      const nextBk = rb.filter(b => t2m(b.start_time) > nm).sort((a,b) => a.start_time > b.start_time ? 1 : -1)[0];
+      const col = r.blocked ? 'var(--gray)' : busy ? 'var(--red)' : 'var(--green)';
+      const bg  = r.blocked ? '#f8fafc' : busy ? '#fef2f2' : '#f0fdf4';
+      const brd = r.blocked ? '#e2e8f0' : busy ? '#fecaca' : '#bbf7d0';
+      const statusLabel = r.blocked ? 'Blocked' : busy ? 'In Use' : 'Available';
+      rh += `<div style="background:${bg};border:1.5px solid ${brd};border-radius:9px;padding:8px 12px;min-width:130px;cursor:pointer;" onclick="nav('newbooking')"><div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;"><div style="width:7px;height:7px;border-radius:50%;background:${col};flex-shrink:0;animation:${(!r.blocked && !busy) ? 'none' : 'none'};"></div><span style="font-weight:700;font-size:.73rem;">${E(r.name)}</span></div><div style="font-size:.66rem;color:${col};font-weight:600;">${statusLabel}</div><div style="font-size:.62rem;color:var(--gray);">${rb.length} booking${rb.length !== 1 ? 's' : ''}${nextBk ? ' · next ' + ft(nextBk.start_time) : ''}</div></div>`;
     });
     rh += '</div></div>';
 
@@ -699,12 +764,45 @@ async function pgNew() {
   for (let h = 9; h < 20; h++) for (let m = 0; m < 60; m += 30) { const t = m2t(h*60+m); to += `<option value="${t}">${ft(t)}</option>`; }
   to += `<option value="20:00">${ft('20:00')}</option>`;
 
-  document.getElementById('MC').innerHTML = `<div style="max-width:640px;"><div class="card cb"><div style="display:flex;align-items:center;gap:9px;font-weight:700;font-size:.9rem;margin-bottom:16px;"><div style="width:30px;height:30px;border-radius:8px;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-plus"></i></div>Create New Booking</div><div id="bkE"></div><div class="fg"><label class="lbl">Meeting Room *</label><select id="bkR" class="sel" onchange="bkRC()">${ro}</select></div><div id="rInfo"></div><div class="row2"><div class="fg"><label class="lbl">Date *</label><input type="date" id="bkD" class="inp" min="${td()}" onchange="bkAv()"/></div><div class="fg"><label class="lbl">Meeting Type *</label><select id="bkT" class="sel" onchange="bkTC()"><option value="">Select</option><option value="internal">Internal (auto-approved)</option><option value="external">External (needs approval)</option></select></div><div class="fg"><label class="lbl">Start Time *</label><select id="bkS" class="sel" onchange="bkEO()">${to}</select></div><div class="fg"><label class="lbl">End Time *</label><select id="bkE2" class="sel"><option value="">Select end</option></select></div></div>
-  <div id="extF" style="display:none;"><hr style="border:none;border-top:1px solid var(--border);margin:12px 0;"><div class="al al-w"><i class="fas fa-info-circle"></i>External meetings require admin approval.</div><div class="row2"><div class="fg"><label class="lbl">Number of Persons *</label><input type="number" id="bkP" class="inp" min="1" placeholder="e.g. 8"/></div><div class="fg"><label class="lbl">Food Required?</label><select id="bkF" class="sel" onchange="bkFoodChange()"><option value="false">No</option><option value="true">Yes 🍽️</option></select></div></div><div id="vegBox" style="display:none;" class="fg"><label class="lbl">Food Preference *</label><div style="display:flex;gap:10px;margin-top:4px;"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;" id="vegLbl"><input type="radio" name="vegtype" value="Veg" onchange="selectVeg('Veg')" style="accent-color:var(--green);">🥦 Veg</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;" id="nonvegLbl"><input type="radio" name="vegtype" value="Non-Veg" onchange="selectVeg('Non-Veg')" style="accent-color:var(--orange);">🍗 Non-Veg</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;" id="bothLbl"><input type="radio" name="vegtype" value="Both" onchange="selectVeg('Both')" style="accent-color:var(--purple);">🍱 Both</label></div></div><div class="fg"><label class="lbl">Remarks</label><textarea id="bkRm" class="ta" placeholder="Special requirements..."></textarea></div></div>
-  <div class="fg"><label class="lbl">Purpose / Agenda *</label><textarea id="bkPu" class="ta" placeholder="Describe the meeting..."></textarea></div>
-  
+  document.getElementById('MC').innerHTML = `<div style="max-width:640px;"><div class="card cb"><div style="display:flex;align-items:center;gap:9px;font-weight:700;font-size:.9rem;margin-bottom:16px;"><div style="width:30px;height:30px;border-radius:8px;background:var(--blue-l);color:var(--blue);display:flex;align-items:center;justify-content:center;"><i class="fas fa-calendar-plus"></i></div>Create New Booking</div><div id="bkE"></div>
+
+  <div class="fg"><label class="lbl">Meeting Room *</label><select id="bkR" class="sel" onchange="bkRC()">${ro}</select></div>
+  <div id="rInfo"></div>
+
+  <div class="row2">
+    <div class="fg"><label class="lbl">Date *</label><input type="date" id="bkD" class="inp" min="${td()}" onchange="bkAv()"/></div>
+    <div class="fg"><label class="lbl">Meeting Type *</label><select id="bkT" class="sel" onchange="bkTC()"><option value="">Select</option><option value="internal">Internal (auto-approved)</option><option value="external">External (needs approval)</option></select></div>
+    <div class="fg"><label class="lbl">Start Time *</label><select id="bkS" class="sel" onchange="bkEO()">${to}</select></div>
+    <div class="fg"><label class="lbl">End Time *</label><select id="bkE2" class="sel"><option value="">Select end</option></select></div>
+  </div>
+
+  <div id="typeInfo"></div>
+
+  <div class="fg"><label class="lbl">Purpose / Agenda *</label><textarea id="bkPu" class="ta" placeholder="Describe the meeting purpose, agenda items..."></textarea></div>
+
+  <div class="row2">
+    <div class="fg"><label class="lbl">Number of Attendees</label><input type="number" id="bkP" class="inp" min="1" placeholder="e.g. 8"/></div>
+    <div class="fg"><label class="lbl">Food Required?</label>
+      <select id="bkF" class="sel" onchange="bkFoodChange()">
+        <option value="false">No Food</option>
+        <option value="true">Yes – Food Required 🍽️</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="vegBox" style="display:none;" class="fg">
+    <label class="lbl">Food Preference *</label>
+    <div style="display:flex;gap:8px;margin-top:6px;">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;transition:all .1s;" id="vegLbl"><input type="radio" name="vegtype" value="Veg" onchange="selectVeg('Veg')" style="accent-color:var(--green);">🥦 Veg</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;transition:all .1s;" id="nonvegLbl"><input type="radio" name="vegtype" value="Non-Veg" onchange="selectVeg('Non-Veg')" style="accent-color:var(--orange);">🍗 Non-Veg</label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:9px 14px;border:1.5px solid var(--border);border-radius:8px;flex:1;font-size:.8rem;font-weight:600;transition:all .1s;" id="bothLbl"><input type="radio" name="vegtype" value="Both" onchange="selectVeg('Both')" style="accent-color:var(--purple);">🍱 Both</label>
+    </div>
+  </div>
+
+  <div class="fg"><label class="lbl">Remarks / Special Requirements</label><textarea id="bkRm" class="ta" placeholder="Any special arrangements, notes for admin..."></textarea></div>
+
   <!-- Guest Emails -->
-  <div class="fg"><label class="lbl">Guest Emails <span style="color:var(--gray);font-weight:400;">(optional – they'll receive a calendar invite when approved)</span></label>
+  <div class="fg"><label class="lbl">Guest Emails <span style="color:var(--gray);font-weight:400;">(optional – notify guests when approved)</span></label>
     <div id="guestList" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;"></div>
     <div style="display:flex;gap:6px;"><input id="guestInput" class="inp" type="email" placeholder="guest@company.com" style="flex:1;" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();addGuest();}"/><button type="button" class="btn btn-gray btn-sm" onclick="addGuest()"><i class="fas fa-plus"></i></button></div>
   </div>
@@ -720,11 +818,14 @@ async function pgNew() {
   <div id="recurBox" style="display:none;" class="fg">
     <label class="lbl">Repeat Until *</label>
     <input type="date" id="bkRecEnd" class="inp" min="${td()}"/>
-    <div class="al al-i" style="margin-top:8px;"><i class="fas fa-info-circle"></i>Recurring bookings will be created for each date. Dates with conflicts will be skipped.</div>
+    <div class="al al-i" style="margin-top:8px;"><i class="fas fa-info-circle"></i>Recurring bookings are created for each date. Dates with conflicts are skipped.</div>
   </div>
   
   <div id="avBox" style="margin-bottom:12px;"></div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-blue btn-lg" id="submitBkBtn" onclick="submitBk()"><i class="fas fa-check"></i> Submit Booking</button><button class="btn btn-gray btn-lg" onclick="nav('dashboard')"><i class="fas fa-times"></i> Cancel</button></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn btn-blue btn-lg" id="submitBkBtn" onclick="submitBk()"><i class="fas fa-check"></i> Submit Booking</button>
+    <button class="btn btn-gray btn-lg" onclick="nav('dashboard')"><i class="fas fa-times"></i> Cancel</button>
+  </div>
   </div></div>`;
   
   window._guestEmails = [];
@@ -779,7 +880,32 @@ async function bkRC() {
   bkAv();
 }
 
-function bkTC() { document.getElementById('extF').style.display = document.getElementById('bkT').value === 'external' ? 'block' : 'none'; }
+function bkTC() {
+  const tp = document.getElementById('bkT').value;
+  const info = document.getElementById('typeInfo');
+  if (!info) return;
+  if (tp === 'external') {
+    info.innerHTML = '<div class="al al-w" style="margin-bottom:8px;"><i class="fas fa-info-circle"></i><div>External meetings go to <strong>admin for approval</strong> before confirmation.</div></div>';
+  } else if (tp === 'internal') {
+    info.innerHTML = '<div class="al al-s" style="margin-bottom:8px;"><i class="fas fa-check-circle"></i><div>Internal meetings are <strong>auto-approved</strong> instantly.</div></div>';
+  } else {
+    info.innerHTML = '';
+  }
+}
+
+function bkFoodChange() {
+  const val = (document.getElementById('bkF') || {}).value;
+  const box = document.getElementById('vegBox');
+  if (!box) return;
+  box.style.display = val === 'true' ? 'block' : 'none';
+  if (val !== 'true') {
+    document.querySelectorAll('input[name="vegtype"]').forEach(r => r.checked = false);
+    ['vegLbl','nonvegLbl','bothLbl'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.borderColor = 'var(--border)'; el.style.background = ''; el.style.color = ''; }
+    });
+  }
+}
 
 function bkEO() {
   const st = document.getElementById('bkS').value, sel = document.getElementById('bkE2');
@@ -793,18 +919,58 @@ async function bkAv() {
   const rid = document.getElementById('bkR').value, dt = document.getElementById('bkD').value, box = document.getElementById('avBox');
   if (!rid || !dt) { box.innerHTML = ''; return; }
   try {
-    const r = await API.get(`/rooms/${rid}/availability?date=${dt}`);
-    const free = r.slots.filter(s => s.free).length;
-    let h = `<div style="background:var(--bg);border-radius:8px;padding:10px;"><div style="font-size:.66rem;font-weight:700;color:var(--gray);text-transform:uppercase;margin-bottom:7px;">Availability – ${fd(dt)}</div><div style="display:flex;flex-wrap:wrap;">`;
-    r.slots.forEach(s => {
+    // Fetch both availability slots and all bookings for that day/room
+    const [avail, allBks] = await Promise.all([
+      API.get(`/rooms/${rid}/availability?date=${dt}`),
+      API.get(`/bookings/calendar?year=${dt.split('-')[0]}&month=${parseInt(dt.split('-')[1])}`),
+    ]);
+    const dayBks = allBks.filter(b => b.room_id === rid && b.date === dt && !['cancelled','rejected'].includes(b.status));
+    const free = avail.slots.filter(s => s.free).length;
+
+    let h = `<div style="background:var(--bg);border-radius:8px;padding:10px;">
+      <div style="font-size:.66rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;">
+        <i class="fas fa-calendar-check" style="color:var(--blue);margin-right:4px;"></i>Slot Availability – ${fd(dt)}
+        <span style="float:right;font-weight:600;color:${free > 0 ? 'var(--green)' : 'var(--red)'};">${free}/${avail.slots.length} free</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;">`;
+
+    avail.slots.forEach(s => {
       if (s.free) {
-        const pTag = s.pending_requests > 0 ? ` <span style="font-size:.58rem;background:#fef3c7;color:#92400e;padding:1px 4px;border-radius:4px;font-weight:700;">${s.pending_requests} pending</span>` : '';
-        h += `<span class="sf" onclick="fillSlot('${s.start}','${s.end}')" title="${s.pending_requests > 0 ? s.pending_requests + ' pending external request(s) for this slot — still bookable' : 'Available'}">${ft(s.start)}${pTag}</span>`;
+        const pTag = s.pending_requests > 0 ? ` <span style="font-size:.56rem;background:#fef3c7;color:#92400e;padding:1px 3px;border-radius:3px;font-weight:700;">${s.pending_requests} pending</span>` : '';
+        h += `<span class="sf" onclick="fillSlot('${s.start}','${s.end}')" title="Available – click to fill">${ft(s.start)}${pTag}</span>`;
       } else {
-        h += `<span class="sb2">${ft(s.start)}</span>`;
+        // Find who booked it
+        const booker = dayBks.find(b => t2m(b.start_time) < t2m(s.end) && t2m(b.end_time) > t2m(s.start));
+        const tipText = booker ? `Booked by ${booker.user_name} (${booker.start_time}–${booker.end_time})${booker.recurring_group ? ' – Recurring' : ''}` : 'Booked';
+        const isMine = booker && booker.is_mine;
+        h += `<span class="sb2" title="${E(tipText)}" style="${isMine ? 'border-color:var(--blue);color:var(--blue);' : ''}">${ft(s.start)}${isMine ? '🔵' : '🔴'}${booker && booker.recurring_group ? '♻' : ''}</span>`;
       }
     });
-    h += `</div><div style="font-size:.68rem;color:var(--gray);margin-top:5px;">${free}/${r.slots.length} free · tap green to auto-fill</div></div>`;
+
+    h += `</div>
+      <div style="font-size:.66rem;color:var(--gray);margin-top:7px;display:flex;gap:12px;flex-wrap:wrap;">
+        <span><span class="sf" style="pointer-events:none;cursor:default;font-size:.6rem;padding:1px 5px;">green</span> = available, click to auto-fill</span>
+        <span>🔴 = booked by others &nbsp; 🔵 = your booking &nbsp; ♻ = recurring</span>
+      </div>`;
+
+    // Show who has bookings today for this room
+    if (dayBks.length > 0) {
+      h += `<div style="margin-top:9px;border-top:1px solid var(--border);padding-top:8px;">
+        <div style="font-size:.65rem;font-weight:700;color:var(--gray);text-transform:uppercase;margin-bottom:5px;">Today's Bookings for this Room</div>`;
+      dayBks.sort((a,b) => a.start_time > b.start_time ? 1 : -1).forEach(b => {
+        const col = b.is_mine ? 'var(--blue)' : '#94a3b8';
+        h += `<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:.72rem;">
+          <div style="width:3px;height:28px;background:${col};border-radius:2px;flex-shrink:0;"></div>
+          <div>
+            <div style="font-weight:600;color:${col};">${ft(b.start_time)} – ${ft(b.end_time)} (${dur(b.start_time, b.end_time)})${b.recurring_group ? ' <span style="font-size:.6rem;color:var(--orange);">♻ Recurring</span>' : ''}</div>
+            <div style="color:var(--gray);font-size:.67rem;">${E(b.purpose)} · ${b.is_mine ? '<strong>You</strong>' : E(b.user_name)}</div>
+          </div>
+          <span style="margin-left:auto;font-size:.62rem;background:${col}18;color:${col};padding:2px 6px;border-radius:10px;font-weight:700;">${b.status}</span>
+        </div>`;
+      });
+      h += '</div>';
+    }
+    h += '</div>';
     box.innerHTML = h;
   } catch { box.innerHTML = ''; }
 }
@@ -826,8 +992,7 @@ async function submitBk() {
   er.innerHTML = '';
   const miss = [];
   if (!rid) miss.push('Room'); if (!dt) miss.push('Date'); if (!s) miss.push('Start Time'); if (!e) miss.push('End Time'); if (!tp) miss.push('Meeting Type'); if (!pu) miss.push('Purpose');
-  if (tp === 'external' && !pp) miss.push('Number of Persons');
-  if (tp === 'external' && fd2 === 'true' && !vegType) miss.push('Food Preference');
+  if (fd2 === 'true' && !vegType) miss.push('Food Preference (Veg/Non-Veg/Both)');
   if (recurring !== 'none' && !recurringEnd) miss.push('Repeat Until date');
   if (miss.length) { er.innerHTML = `<div class="al al-e"><i class="fas fa-exclamation-circle"></i>Please fill: ${E(miss.join(', '))}</div>`; return; }
   const btn = document.getElementById('submitBkBtn'); btn.innerHTML = '<div class="spin"></div> Submitting...'; btn.disabled = true;
@@ -889,9 +1054,52 @@ async function viewBk(id) {
 
     const btns = [{ l: 'Close', c: 'btn-gray', f: closeModal }];
     if (b.status === 'approved') btns.unshift({ l: '📱 Show QR', c: 'btn-gray', f: () => showQR(id) });
+    if (b.status === 'approved') btns.unshift({ l: '🖨️ Print', c: 'btn-gray', f: () => printBooking(b) });
     if (cc) btns.unshift({ l: 'Cancel Booking', c: 'btn-red', f: () => { closeModal(); confCancel(id); } });
     if (cc && b.recurring_group) btns.unshift({ l: 'Cancel All Recurring', c: 'btn-red', f: () => { closeModal(); confCancelRecurring(id); } });
     modal('Booking Details', h, btns);
+  } catch (err) { toast(err.message, 'error'); }
+}
+
+function printBooking(b) {
+  const foodStr = b.food ? ('Yes 🍽️' + (b.veg_nonveg ? ' (' + b.veg_nonveg + ')' : '')) : 'No';
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/><title>Booking – ${b.room_name}</title>
+  <style>*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Segoe UI',sans-serif;padding:32px;color:#1a1d2e;}
+  .hdr{border-bottom:2px solid #e2e8f0;padding-bottom:16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;}
+  h1{font-size:1.2rem;font-weight:800;}.sub{color:#64748b;font-size:.8rem;margin-top:3px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .box{background:#f8fafc;border-radius:8px;padding:11px;}.lbl{font-size:.65rem;text-transform:uppercase;font-weight:700;color:#64748b;margin-bottom:3px;}.val{font-weight:600;font-size:.85rem;}
+  .bdg{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.7rem;font-weight:700;background:#dcfce7;color:#16a34a;}
+  .footer{margin-top:24px;padding-top:12px;border-top:1px solid #e2e8f0;font-size:.7rem;color:#94a3b8;text-align:center;}
+  @media print{}</style></head><body>
+  <div class="hdr"><div><h1>Meeting Room Booking Confirmation</h1><div class="sub">SLMG Beverages · Booking ID: ${E(b.id)}</div></div><span class="bdg">${b.status.toUpperCase()}</span></div>
+  <div class="grid">
+    <div class="box"><div class="lbl">Room</div><div class="val">${E(b.room_name)}${b.room_floor ? ' — ' + E(b.room_floor) : ''}</div></div>
+    <div class="box"><div class="lbl">Date</div><div class="val">${b.date}</div></div>
+    <div class="box"><div class="lbl">Time</div><div class="val">${b.start_time} – ${b.end_time}</div></div>
+    <div class="box"><div class="lbl">Meeting Type</div><div class="val">${b.meeting_type}</div></div>
+    <div class="box"><div class="lbl">Booked By</div><div class="val">${E(b.user_name)}<br><span style="font-size:.75rem;color:#64748b;">${E(b.user_email)}</span></div></div>
+    <div class="box"><div class="lbl">Food</div><div class="val">${foodStr}</div></div>
+  </div>
+  <div class="box" style="margin-bottom:12px;"><div class="lbl">Purpose / Agenda</div><div class="val" style="margin-top:5px;">${E(b.purpose)}</div>${b.remarks ? '<div style="margin-top:6px;font-size:.78rem;color:#64748b;"><strong>Remarks:</strong> ' + E(b.remarks) + '</div>' : ''}</div>
+  <div class="footer">Generated by SLMG Meeting Room Booking System · ${new Date().toLocaleString('en-IN')}</div>
+  </body></html>`;
+  const w = window.open('', '_blank'); w.document.write(html); w.document.close(); setTimeout(() => w.print(), 400);
+}
+
+async function bulkApprove() {
+  if (!isAdm()) return;
+  if (!confirm('Approve ALL pending bookings?')) return;
+  try {
+    const bks = await API.get('/bookings?status=pending');
+    let approved = 0;
+    for (const b of bks) {
+      if (b.status === 'pending') {
+        try { await API.patch('/bookings/' + b.id + '/approve'); approved++; } catch {}
+      }
+    }
+    toast(`Bulk approved ${approved} booking(s)!`, 'success');
+    renderNav(); pgApprove();
   } catch (err) { toast(err.message, 'error'); }
 }
 
@@ -924,28 +1132,70 @@ function confCancel(id) {
 }
 
 // ── CALENDAR ───────────────────────────────────────────────────────────────
+let _calBks = []; // cached calendar bookings for current month
+
 async function pgCal() {
   if (!CY) { CY = new Date().getFullYear(); CM = new Date().getMonth(); }
-  document.getElementById('MC').innerHTML = `<div class="card cb"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px;"><div style="display:flex;align-items:center;gap:6px;"><button class="btn btn-gray btn-sm" onclick="calN(-1)"><i class="fas fa-chevron-left"></i></button><div id="calT" style="font-weight:700;min-width:144px;text-align:center;font-size:.9rem;"></div><button class="btn btn-gray btn-sm" onclick="calN(1)"><i class="fas fa-chevron-right"></i></button></div><button class="btn btn-gray btn-sm" onclick="CY=new Date().getFullYear();CM=new Date().getMonth();drawCal()">Today</button></div><div id="calG"></div></div>`;
+  document.getElementById('MC').innerHTML = `
+    <div class="card cb">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:9px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button class="btn btn-gray btn-sm" onclick="calN(-1)"><i class="fas fa-chevron-left"></i></button>
+          <div id="calT" style="font-weight:700;min-width:144px;text-align:center;font-size:.9rem;"></div>
+          <button class="btn btn-gray btn-sm" onclick="calN(1)"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
+          <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--gray);"><span style="width:10px;height:10px;border-radius:2px;background:var(--blue);opacity:.7;display:inline-block;"></span>My booking</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--gray);"><span style="width:10px;height:10px;border-radius:2px;background:#94a3b8;display:inline-block;"></span>Others</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--orange);"><i class="fas fa-redo" style="font-size:.65rem;"></i>Recurring</span>
+          <button class="btn btn-gray btn-sm" onclick="CY=new Date().getFullYear();CM=new Date().getMonth();drawCal()">Today</button>
+          <button class="btn btn-blue btn-sm" onclick="nav('newbooking')"><i class="fas fa-plus"></i> Book</button>
+        </div>
+      </div>
+      <div id="calG"></div>
+    </div>`;
   drawCal();
 }
+
 function calN(d) { CM += d; if (CM > 11) { CM = 0; CY++; } if (CM < 0) { CM = 11; CY--; } drawCal(); }
 
 async function drawCal() {
   const mos = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   document.getElementById('calT').textContent = mos[CM] + ' ' + CY;
   const first = new Date(CY, CM, 1).getDay(), dim = new Date(CY, CM+1, 0).getDate(), today = td();
-  let bks = [];
-  try { bks = await API.get('/bookings'); } catch {}
+
+  // Fetch ALL bookings (all users) using the calendar endpoint
+  try {
+    _calBks = await API.get(`/bookings/calendar?year=${CY}&month=${CM + 1}`);
+  } catch { _calBks = []; }
+
   let h = '<div class="cg">' + ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="ch">${d}</div>`).join('');
   for (let i = 0; i < first; i++) h += '<div class="cc co"></div>';
+
   for (let day = 1; day <= dim; day++) {
     const date = CY + '-' + String(CM+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
     const isT = date === today;
-    const dBk = bks.filter(b => b.date === date && !['cancelled','rejected'].includes(b.status));
-    h += `<div class="cc${isT ? ' ct' : ''}" onclick="showDay('${date}')"><div style="font-size:.76rem;font-weight:${isT ? 800 : 600};color:${isT ? 'var(--blue)' : 'var(--text)'};">${day}</div>`;
-    dBk.slice(0, 3).forEach(b => { h += `<div class="cdot" style="background:${(b.room_color || '#ccc')}20;color:${b.room_color || '#ccc'};">${ft(b.start_time)} ${E((b.room_name || '').split(' ')[0])}</div>`; });
-    if (dBk.length > 3) h += `<div style="font-size:.6rem;color:var(--gray);">+${dBk.length-3} more</div>`;
+    const isPast = date < today;
+    const dBk = _calBks.filter(b => b.date === date);
+    const myBk = dBk.filter(b => b.is_mine);
+    const otherBk = dBk.filter(b => !b.is_mine);
+    const hasRecurring = dBk.some(b => b.recurring_group);
+
+    h += `<div class="cc${isT ? ' ct' : ''}${isPast ? ' co' : ''}" onclick="showDay('${date}')" style="position:relative;">`;
+    h += `<div style="display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:.76rem;font-weight:${isT ? 800 : 600};color:${isT ? 'var(--blue)' : isPast ? 'var(--gray)' : 'var(--text)'};">${day}</span>
+      ${hasRecurring ? '<i class="fas fa-redo" style="font-size:.5rem;color:var(--orange);opacity:.8;"></i>' : ''}
+    </div>`;
+
+    // Show up to 3 booking dots with color coding
+    const allBk = [...myBk, ...otherBk];
+    allBk.slice(0, 3).forEach(b => {
+      const dotCol = b.is_mine ? (b.room_color || 'var(--blue)') : '#94a3b8';
+      const label = `${ft(b.start_time)} ${E((b.room_name || '').split(' ')[0])}${b.recurring_group ? ' ♻' : ''}`;
+      h += `<div class="cdot" style="background:${dotCol}25;color:${dotCol};border-left:2px solid ${dotCol};" title="${E(b.room_name)} ${b.start_time}–${b.end_time}: ${E(b.purpose)}">${label}</div>`;
+    });
+    if (allBk.length > 3) h += `<div style="font-size:.58rem;color:var(--gray);padding:1px 3px;">+${allBk.length - 3} more</div>`;
+
     h += '</div>';
   }
   h += '</div>';
@@ -953,27 +1203,84 @@ async function drawCal() {
 }
 
 async function showDay(date) {
-  let bks = [];
-  try { bks = (await API.get('/bookings')).filter(b => b.date === date && !['cancelled','rejected'].includes(b.status)); } catch {}
-  if (!bks.length) { modal('Bookings – ' + fd(date), '<div class="empty"><i class="far fa-calendar"></i><p>No bookings this day.</p></div>', [{ l: 'Close', c: 'btn-gray', f: closeModal }]); return; }
-  const h = bks.map(b => `<div style="border-left:4px solid ${b.room_color || '#ccc'};padding:8px 11px;border-radius:0 8px 8px 0;background:var(--bg);margin-bottom:8px;"><div style="font-weight:700;color:${b.room_color || '#ccc'};font-size:.82rem;">${E(b.room_name)}</div><div style="font-size:.7rem;color:var(--gray);margin-top:1px;">${ft(b.start_time)} – ${ft(b.end_time)} · ${dur(b.start_time, b.end_time)}</div><div style="font-size:.76rem;margin-top:2px;">${E(b.purpose)}</div><div style="font-size:.68rem;color:var(--gray);">by ${E(b.user_name)}</div><span class="bdg b${b.status[0]}" style="margin-top:4px;">${b.status}</span></div>`).join('');
-  modal('Bookings – ' + fd(date) + ' (' + bks.length + ')', h, [{ l: 'Close', c: 'btn-gray', f: closeModal }]);
+  // Use cached bookings if available, otherwise fetch
+  let bks = _calBks.filter(b => b.date === date);
+  if (!bks.length && _calBks.length === 0) {
+    try { bks = (await API.get('/bookings/calendar')).filter(b => b.date === date); } catch {}
+  }
+  if (!bks.length) {
+    modal('📅 ' + fd(date), `<div class="empty"><i class="far fa-calendar"></i><p>No bookings on this day.</p></div><div style="margin-top:14px;text-align:center;"><button class="btn btn-blue" onclick="closeModal();nav('newbooking')"><i class="fas fa-plus"></i> Book this day</button></div>`, [{ l: 'Close', c: 'btn-gray', f: closeModal }]);
+    return;
+  }
+
+  // Sort by room then time
+  bks.sort((a,b) => (a.room_name > b.room_name ? 1 : a.start_time > b.start_time ? 1 : -1));
+
+  const h = bks.map(b => {
+    const isMine = b.is_mine;
+    const dotCol = isMine ? (b.room_color || 'var(--blue)') : '#94a3b8';
+    const recurBadge = b.recurring_group ? `<span style="font-size:.62rem;background:var(--orange-l);color:var(--orange);padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;"><i class="fas fa-redo"></i> Recurring</span>` : '';
+    const mineBadge = isMine ? `<span style="font-size:.62rem;background:var(--blue-l);color:var(--blue);padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;">Mine</span>` : '';
+    const statusCol = { approved: 'var(--green)', pending: 'var(--orange)', cancelled: '#94a3b8', rejected: 'var(--red)' };
+    return `<div style="border-left:4px solid ${dotCol};padding:9px 11px;border-radius:0 8px 8px 0;background:var(--bg);margin-bottom:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;">
+        <div style="font-weight:700;color:${dotCol};font-size:.82rem;">${E(b.room_name)}${recurBadge}${mineBadge}</div>
+        <span style="font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:20px;background:${statusCol[b.status]}20;color:${statusCol[b.status]};">${b.status.toUpperCase()}</span>
+      </div>
+      <div style="font-size:.7rem;color:var(--gray);margin-top:3px;"><i class="fas fa-clock" style="width:12px;"></i> ${ft(b.start_time)} – ${ft(b.end_time)} (${dur(b.start_time, b.end_time)})</div>
+      <div style="font-size:.74rem;margin-top:3px;font-weight:500;">${E(b.purpose)}</div>
+      <div style="font-size:.68rem;color:var(--gray);margin-top:2px;"><i class="fas fa-user" style="width:12px;"></i> ${E(b.user_name)}${b.room_floor ? ' · ' + E(b.room_floor) : ''}</div>
+    </div>`;
+  }).join('');
+
+  const btns = [{ l: 'Close', c: 'btn-gray', f: closeModal }];
+  btns.unshift({ l: '+ Book This Day', c: 'btn-blue', f: () => { closeModal(); nav('newbooking'); } });
+  modal(`📅 ${fd(date)} — ${bks.length} booking${bks.length !== 1 ? 's' : ''}`, h, btns);
 }
 
 // ── TIMELINE ───────────────────────────────────────────────────────────────
 async function pgTL() {
-  const today = td(), rooms = await getRooms(), bks = (await API.get('/bookings')).filter(b => b.date === today && !['cancelled','rejected'].includes(b.status));
-  const hours = [9,10,11,12,13,14,15,16,17,18,19], nowH = new Date().getHours();
-  let h = `<div class="card cb"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;"><div style="font-weight:700;font-size:.88rem;"><i class="fas fa-clock" style="color:var(--blue);margin-right:6px;"></i>Timeline – Today</div><button class="btn btn-blue btn-sm np" onclick="nav('newbooking')"><i class="fas fa-plus"></i> Book</button></div><div style="overflow-x:auto;"><div style="min-width:500px;"><div style="display:grid;grid-template-columns:66px repeat(${rooms.length},1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;">`;
+  const today = td(), rooms = await getRooms();
+  // Fetch ALL users' bookings for today (not just mine)
+  let bks = [];
+  try { bks = (await API.get(`/bookings/calendar?year=${today.split('-')[0]}&month=${parseInt(today.split('-')[1])}`)).filter(b => b.date === today && !['cancelled','rejected'].includes(b.status)); } catch {}
+
+  const hours = [9,10,11,12,13,14,15,16,17,18,19], nowH = new Date().getHours(), nowM = new Date().getMinutes();
+  const nowPct = ((nowH - 9) * 60 + nowM) / (11 * 60) * 100; // percentage through the day
+
+  let h = `<div class="card cb">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;flex-wrap:wrap;gap:9px;">
+      <div style="font-weight:700;font-size:.88rem;"><i class="fas fa-clock" style="color:var(--blue);margin-right:6px;"></i>Room Timeline – Today <span style="font-size:.72rem;font-weight:400;color:var(--gray);">${fd(today)}</span></div>
+      <div style="display:flex;gap:7px;align-items:center;">
+        <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--gray);"><span style="width:10px;height:10px;border-radius:2px;background:var(--blue);opacity:.7;display:inline-block;"></span>Mine</span>
+        <span style="display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--gray);"><span style="width:10px;height:10px;border-radius:2px;background:#94a3b8;display:inline-block;"></span>Others</span>
+        <button class="btn btn-blue btn-sm np" onclick="nav('newbooking')"><i class="fas fa-plus"></i> Book</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;"><div style="min-width:500px;">
+      <div style="display:grid;grid-template-columns:66px repeat(${rooms.length},1fr);border:1px solid var(--border);border-radius:10px;overflow:hidden;">`;
+
   h += '<div style="padding:7px 5px;background:var(--bg);border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:.63rem;font-weight:700;color:var(--gray);">TIME</div>';
   rooms.forEach(r => { h += `<div style="padding:7px 5px;background:var(--bg);border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:.68rem;font-weight:700;color:${r.color};text-align:center;">${E(r.name)}</div>`; });
+
   hours.forEach(hr => {
     const isN = hr === nowH;
-    h += `<div style="padding:7px 5px;background:${isN ? '#fffbeb' : 'var(--bg)'};border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:.68rem;font-weight:600;color:var(--gray);display:flex;align-items:center;">${ft(m2t(hr*60))}</div>`;
+    h += `<div style="padding:7px 5px;background:${isN ? '#fffbeb' : 'var(--bg)'};border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:.68rem;font-weight:600;color:${isN ? 'var(--orange)' : 'var(--gray)'};display:flex;align-items:center;">${ft(m2t(hr*60))}${isN ? '<span style="width:5px;height:5px;background:var(--orange);border-radius:50%;margin-left:3px;"></span>' : ''}</div>`;
     rooms.forEach(r => {
       const bk = bks.find(b => b.room_id === r.id && t2m(b.start_time) <= hr*60 && t2m(b.end_time) > hr*60);
-      if (bk) h += `<div style="padding:3px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:${r.color}15;"><div style="background:${r.color};color:#fff;border-radius:5px;padding:4px 6px;font-size:.65rem;font-weight:600;min-height:44px;display:flex;flex-direction:column;justify-content:center;"><span>${ft(bk.start_time)}–${ft(bk.end_time)}</span><span style="font-weight:400;opacity:.85;font-size:.59rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${E(bk.purpose)}</span></div></div>`;
-      else h += `<div style="border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-height:50px;background:${isN ? '#fefce8' : 'transparent'};"><span style="font-size:.6rem;color:var(--gray);padding:3px 5px;display:block;opacity:.3;">free</span></div>`;
+      if (bk) {
+        const col = bk.is_mine ? r.color : '#94a3b8';
+        const recIcon = bk.recurring_group ? ' ♻' : '';
+        h += `<div style="padding:3px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:${col}15;cursor:pointer;" onclick="viewBk('${bk.id}')">
+          <div style="background:${col};color:#fff;border-radius:5px;padding:4px 6px;font-size:.63rem;font-weight:600;min-height:44px;display:flex;flex-direction:column;justify-content:center;">
+            <span>${ft(bk.start_time)}–${ft(bk.end_time)}${recIcon}</span>
+            <span style="font-weight:400;opacity:.85;font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${E(bk.purpose)}</span>
+            <span style="font-weight:400;opacity:.7;font-size:.55rem;">${bk.is_mine ? 'Mine' : E(bk.user_name)}</span>
+          </div>
+        </div>`;
+      } else {
+        h += `<div style="border-right:1px solid var(--border);border-bottom:1px solid var(--border);min-height:50px;background:${isN ? '#fefce8' : 'transparent'};cursor:pointer;" onclick="nav('newbooking')"><span style="font-size:.58rem;color:var(--gray);padding:3px 5px;display:block;opacity:.25;">free</span></div>`;
+      }
     });
   });
   h += '</div></div></div></div>';
@@ -985,7 +1292,7 @@ async function pgApprove() {
   if (!isAdm()) return;
   try {
     const bks = (await API.get('/bookings?status=pending')).sort((a,b) => a.date > b.date ? 1 : -1);
-    let h = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">Approval Center <span style="font-size:.76rem;font-weight:400;color:var(--gray);">(${bks.length} pending)</span></div></div>`;
+    let h = `<div class="ph"><div style="font-size:1.1rem;font-weight:700;">Approval Center <span style="font-size:.76rem;font-weight:400;color:var(--gray);">(${bks.length} pending)</span></div>${bks.length > 1 ? '<button class="btn btn-grn" onclick="bulkApprove()"><i class="fas fa-check-double"></i> Approve All</button>' : ''}</div>`;
     if (!bks.length) { h += '<div class="card"><div class="empty" style="padding:52px;"><i class="fas fa-check-circle" style="color:var(--green);opacity:1;font-size:2rem;display:block;margin-bottom:8px;"></i><p style="color:var(--green);font-weight:700;">All clear! No pending approvals.</p></div></div>'; document.getElementById('MC').innerHTML = h; return; }
     h += '<div style="display:flex;flex-direction:column;gap:10px;">' + bks.map(b => {
       const foodStr = b.food ? ('Yes 🍽️' + (b.veg_nonveg ? ' (' + b.veg_nonveg + ')' : '')) : 'No';
@@ -1411,114 +1718,82 @@ function respondAmenity(id, status) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// ── INTEGRATIONS PAGE (Google Calendar + Slack + WhatsApp) ───────────────
-// ══════════════════════════════════════════════════════════════════════════
+// ── INTEGRATIONS PAGE (Email + WhatsApp only) ─────────────────────────────
 async function pgIntegrations() {
   if (!isAdm()) return;
-  let gcalStatus = { configured: false, auth_url: null };
   let cfg = {};
-  try { [gcalStatus, cfg] = await Promise.all([API.get('/gcal/status'), API.get('/settings')]); } catch {}
+  try { cfg = await API.get('/settings'); } catch {}
 
-  const slackOn = !!(cfg.slack_webhook);
-  const waOn    = !!(cfg.twilio_sid && cfg.twilio_token);
+  const emailOn = !!(cfg.ejs_sid && cfg.ejs_tid && cfg.ejs_pk);
+  const waOn    = !!(cfg.twilio_sid && cfg.twilio_token && cfg.twilio_from && cfg.twilio_to);
 
   document.getElementById('MC').innerHTML = `<div style="max-width:680px;display:flex;flex-direction:column;gap:16px;">
 
-    <!-- Google Calendar -->
-    <div class="card cb">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-        <div style="width:42px;height:42px;border-radius:10px;background:#fff;border:1.5px solid #e2e8f0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="24" height="24" viewBox="0 0 24 24"><path fill="#4285F4" d="M19.5 3h-15A1.5 1.5 0 003 4.5v15A1.5 1.5 0 004.5 21h15a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0019.5 3zm-10 13H7v-6h2.5v6zm5 0h-2.5v-6H14v6zm2.5-8h-10V6h10v2z"/></svg>
-        </div>
-        <div style="flex:1;"><div style="font-weight:700;font-size:.9rem;">Google Calendar</div><div style="font-size:.72rem;color:var(--gray);">Auto-sync approved bookings to your Google Calendar</div></div>
-        <span class="bdg ${gcalStatus.configured ? 'ba' : 'bc'}">${gcalStatus.configured ? '✅ Connected' : '⚪ Not Connected'}</span>
+  <div class="al al-i"><i class="fas fa-info-circle"></i>
+    <div><strong>Notification Integrations</strong> — Configure how your team gets notified about bookings. Both channels can be active at the same time.</div>
+  </div>
+
+  <!-- Email (EmailJS) status card -->
+  <div class="card cb">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+      <div style="width:42px;height:42px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem;">📧</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:.9rem;">Email Notifications</div>
+        <div style="font-size:.72rem;color:var(--gray);">Sends emails on new bookings, approvals, rejections & cancellations</div>
       </div>
-      <div id="gcalErr"></div>
-      <div class="row2">
-        <div class="fg"><label class="lbl">Google Client ID</label><input id="gcalCid" class="inp" value="${E(cfg.gcal_client_id||'')}" placeholder="xxxx.apps.googleusercontent.com"/></div>
-        <div class="fg"><label class="lbl">Google Client Secret</label><input id="gcalSec" class="inp" type="password" value="${cfg.gcal_client_secret ? '••••••••' : ''}" placeholder="GOCSPX-xxxxxx"/></div>
+      <span class="bdg ${emailOn ? 'ba' : 'bc'}">${emailOn ? '✅ Active' : '⚪ Not configured'}</span>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-blue" onclick="nav('emailsettings')"><i class="fas fa-cog"></i> Configure Email</button>
+      ${emailOn ? `<button class="btn btn-gray" onclick="nav('emaillog')"><i class="fas fa-history"></i> View Email Log</button>` : ''}
+    </div>
+    ${emailOn ? `<div style="margin-top:10px;font-size:.74rem;color:var(--gray);">Configured with Service ID: <strong>${E(cfg.ejs_sid)}</strong> · Admin email: <strong>${E(cfg.ejs_admin_email||'—')}</strong></div>` : ''}
+  </div>
+
+  <!-- WhatsApp via Twilio -->
+  <div class="card cb">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div style="width:42px;height:42px;border-radius:10px;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 0C5.372 0 0 5.373 0 12c0 2.117.554 4.099 1.523 5.82L.051 23.98l6.336-1.447A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.626 0 11.999 0zm.001 21.818a9.81 9.81 0 01-5.012-1.371l-.36-.214-3.736.853.87-3.646-.235-.374A9.818 9.818 0 012.182 12C2.182 6.579 6.58 2.182 12 2.182c5.422 0 9.818 4.397 9.818 9.818 0 5.422-4.396 9.818-9.818 9.818z"/></svg>
       </div>
-      <div class="fg"><label class="lbl">Calendar ID <span style="color:var(--gray);font-weight:400;">(use "primary" for default calendar)</span></label><input id="gcalCal" class="inp" value="${E(cfg.gcal_calendar_id||'primary')}" placeholder="primary or calendar@group.calendar.google.com"/></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <button class="btn btn-blue" onclick="saveGcal()"><i class="fas fa-save"></i> Save & Get Auth Link</button>
-        ${gcalStatus.auth_url ? `<a href="${gcalStatus.auth_url}" target="_blank" class="btn btn-grn"><i class="fab fa-google"></i> Connect Google Account</a>` : ''}
-        ${gcalStatus.configured ? '<span class="bdg ba">✅ Calendar sync active — new approvals sync automatically</span>' : ''}
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:.9rem;">WhatsApp Notifications <span style="font-size:.68rem;background:var(--orange-l);color:var(--orange);padding:2px 6px;border-radius:4px;font-weight:700;">via Twilio</span></div>
+        <div style="font-size:.72rem;color:var(--gray);">Instantly notify admin on WhatsApp for new bookings, approvals & cancellations</div>
       </div>
-      <div class="al al-i" style="margin-top:12px;"><i class="fas fa-info-circle"></i><div style="font-size:.72rem;">Setup: <a href="https://console.cloud.google.com" target="_blank" style="color:var(--blue);">console.cloud.google.com</a> → APIs & Services → Credentials → Create OAuth 2.0 Client ID → Add redirect URI: <code>${window.location.origin}/api/gcal/callback</code></div></div>
+      <span class="bdg ${waOn ? 'ba' : 'bc'}">${waOn ? '✅ Active' : '⚪ Off'}</span>
     </div>
 
-    <!-- Slack -->
-    <div class="card cb">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-        <div style="width:42px;height:42px;border-radius:10px;background:#611f69;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M5.042 15.165a2.528 2.528 0 01-2.52 2.523A2.528 2.528 0 010 15.165a2.527 2.527 0 012.522-2.52h2.52v2.52zm1.271 0a2.527 2.527 0 012.521-2.52 2.527 2.527 0 012.521 2.52v6.313A2.528 2.528 0 018.834 24a2.528 2.528 0 01-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 01-2.521-2.52A2.528 2.528 0 018.834 0a2.527 2.527 0 012.521 2.522v2.52H8.834zm0 1.271a2.527 2.527 0 012.521 2.521 2.527 2.527 0 01-2.521 2.521H2.522A2.528 2.528 0 010 8.834a2.528 2.528 0 012.522-2.521h6.312zm10.122 2.521a2.528 2.528 0 012.522-2.521A2.528 2.528 0 0124 8.834a2.528 2.528 0 01-2.522 2.521h-2.522V8.834zm-1.268 0a2.528 2.528 0 01-2.523 2.521 2.527 2.527 0 01-2.52-2.521V2.522A2.527 2.527 0 0115.165 0a2.528 2.528 0 012.523 2.522v6.312zm-2.523 10.122a2.528 2.528 0 012.523 2.522A2.528 2.528 0 0115.165 24a2.527 2.527 0 01-2.52-2.522v-2.522h2.52zm0-1.268a2.527 2.527 0 01-2.52-2.523 2.526 2.526 0 012.52-2.52h6.313A2.527 2.527 0 0124 15.165a2.528 2.528 0 01-2.522 2.523h-6.313z"/></svg>
-        </div>
-        <div style="flex:1;"><div style="font-weight:700;font-size:.9rem;">Slack Notifications</div><div style="font-size:.72rem;color:var(--gray);">Send booking events to a Slack channel via Incoming Webhook</div></div>
-        <span class="bdg ${slackOn ? 'ba' : 'bc'}">${slackOn ? '✅ Active' : '⚪ Off'}</span>
+    <!-- Setup Guide -->
+    <div style="background:var(--bg);border-radius:9px;padding:12px 14px;margin-bottom:14px;">
+      <div style="font-size:.72rem;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">📋 Free Setup Guide (2 minutes)</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;gap:9px;align-items:flex-start;"><span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0;margin-top:1px;">1</span><div style="font-size:.76rem;">Go to <a href="https://console.twilio.com" target="_blank" style="color:var(--blue);font-weight:700;">console.twilio.com</a> → Sign up free</div></div>
+        <div style="display:flex;gap:9px;align-items:flex-start;"><span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0;margin-top:1px;">2</span><div style="font-size:.76rem;">Messaging → <strong>Try it out → Send a WhatsApp message</strong> → Join Sandbox → Save sandbox number as "From"</div></div>
+        <div style="display:flex;gap:9px;align-items:flex-start;"><span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0;margin-top:1px;">3</span><div style="font-size:.76rem;">Copy <strong>Account SID</strong> and <strong>Auth Token</strong> from your Twilio Console Dashboard</div></div>
+        <div style="display:flex;gap:9px;align-items:flex-start;"><span style="background:var(--blue);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0;margin-top:1px;">4</span><div style="font-size:.76rem;">Your phone must send the join code to the sandbox number first, then enter it as "To" below</div></div>
       </div>
-      <div id="slackErr"></div>
-      <div class="fg"><label class="lbl">Webhook URL</label><input id="slackWh" class="inp" value="${E(cfg.slack_webhook||'')}" placeholder="https://hooks.slack.com/services/T.../B.../xxx"/></div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-        <button class="btn btn-blue" onclick="saveSlack()"><i class="fas fa-save"></i> Save</button>
-        ${slackOn ? '<button class="btn btn-gray" onclick="testSlack()"><i class="fas fa-paper-plane"></i> Send Test</button>' : ''}
-        ${slackOn ? '<button class="btn btn-red btn-sm" onclick="clearSlack()"><i class="fas fa-trash"></i> Remove</button>' : ''}
-      </div>
-      <div class="al al-i" style="margin-top:12px;"><i class="fas fa-info-circle"></i><div style="font-size:.72rem;">Setup: <a href="https://api.slack.com/apps" target="_blank" style="color:var(--blue);">api.slack.com/apps</a> → Create App → Incoming Webhooks → Add to Channel → Copy URL</div></div>
     </div>
 
-    <!-- WhatsApp -->
-    <div class="card cb">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-        <div style="width:42px;height:42px;border-radius:10px;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 0C5.372 0 0 5.373 0 12c0 2.117.554 4.099 1.523 5.82L.051 23.98l6.336-1.447A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.626 0 11.999 0zm.001 21.818a9.81 9.81 0 01-5.012-1.371l-.36-.214-3.736.853.87-3.646-.235-.374A9.818 9.818 0 012.182 12C2.182 6.579 6.58 2.182 12 2.182c5.422 0 9.818 4.397 9.818 9.818 0 5.422-4.396 9.818-9.818 9.818z"/></svg>
-        </div>
-        <div style="flex:1;"><div style="font-weight:700;font-size:.9rem;">WhatsApp Notifications <span style="font-size:.68rem;background:var(--orange-l);color:var(--orange);padding:2px 6px;border-radius:4px;font-weight:700;">via Twilio</span></div><div style="font-size:.72rem;color:var(--gray);">Send booking alerts to admin's WhatsApp number</div></div>
-        <span class="bdg ${waOn ? 'ba' : 'bc'}">${waOn ? '✅ Active' : '⚪ Off'}</span>
-      </div>
-      <div id="waErr"></div>
-      <div class="row2">
-        <div class="fg"><label class="lbl">Twilio Account SID</label><input id="waSid" class="inp" value="${E(cfg.twilio_sid||'')}" placeholder="ACxxxxxxxxxxxxxxxx"/></div>
-        <div class="fg"><label class="lbl">Auth Token</label><input id="waToken" class="inp" type="password" value="${cfg.twilio_token ? '••••••••' : ''}" placeholder="your_auth_token"/></div>
-        <div class="fg"><label class="lbl">From (Twilio WA number)</label><input id="waFrom" class="inp" value="${E(cfg.twilio_from||'')}" placeholder="whatsapp:+14155238886"/></div>
-        <div class="fg"><label class="lbl">To (Admin WA number)</label><input id="waTo" class="inp" value="${E(cfg.twilio_to||'')}" placeholder="whatsapp:+919876543210"/></div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-blue" onclick="saveWhatsApp()"><i class="fas fa-save"></i> Save</button>
-        ${waOn ? '<button class="btn btn-red btn-sm" onclick="clearWhatsApp()"><i class="fas fa-trash"></i> Remove</button>' : ''}
-      </div>
-      <div class="al al-i" style="margin-top:12px;"><i class="fas fa-info-circle"></i><div style="font-size:.72rem;">Setup: <a href="https://console.twilio.com" target="_blank" style="color:var(--blue);">console.twilio.com</a> → Messaging → Try WhatsApp → Sandbox → Join with code → use sandbox number as "From"</div></div>
+    <div id="waErr"></div>
+    <div class="row2">
+      <div class="fg"><label class="lbl">Twilio Account SID *</label><input id="waSid" class="inp" value="${E(cfg.twilio_sid||'')}" placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"/></div>
+      <div class="fg"><label class="lbl">Auth Token *</label><input id="waToken" class="inp" type="password" value="${cfg.twilio_token ? '••••••••' : ''}" placeholder="Your Auth Token"/></div>
+      <div class="fg"><label class="lbl">From Number (Twilio Sandbox) *</label><input id="waFrom" class="inp" value="${E(cfg.twilio_from||'')}" placeholder="whatsapp:+14155238886"/></div>
+      <div class="fg"><label class="lbl">Admin WhatsApp Number (To) *</label><input id="waTo" class="inp" value="${E(cfg.twilio_to||'')}" placeholder="whatsapp:+919876543210"/></div>
     </div>
+
+    <div style="font-size:.72rem;color:var(--gray);margin-bottom:10px;">
+      ⚡ Notifications sent for: New booking requests · Approvals · Rejections · Cancellations
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-blue" onclick="saveWhatsApp()"><i class="fas fa-save"></i> Save & Activate</button>
+      ${waOn ? '<button class="btn btn-gray" onclick="testWhatsApp()"><i class="fas fa-paper-plane"></i> Send Test</button>' : ''}
+      ${waOn ? '<button class="btn btn-red btn-sm" onclick="clearWhatsApp()"><i class="fas fa-trash"></i> Remove</button>' : ''}
+    </div>
+  </div>
 
   </div>`;
-}
-
-// Google Calendar helpers
-async function saveGcal() {
-  const gcal_client_id = document.getElementById('gcalCid').value.trim();
-  const gcal_client_secret = document.getElementById('gcalSec').value.trim();
-  const gcal_calendar_id = document.getElementById('gcalCal').value.trim() || 'primary';
-  if (!gcal_client_id) { mErr('gcalErr','Client ID required.'); return; }
-  try {
-    const r = await API.put('/gcal/settings', { gcal_client_id, gcal_client_secret: gcal_client_secret === '••••••••' ? undefined : gcal_client_secret, gcal_calendar_id });
-    toast('Saved! Click "Connect Google Account" to authorize.', 'success');
-    pgIntegrations();
-  } catch(err) { mErr('gcalErr', err.message); }
-}
-
-// Slack helpers
-async function saveSlack() {
-  const slack_webhook = document.getElementById('slackWh').value.trim();
-  if (!slack_webhook) { mErr('slackErr','Webhook URL required.'); return; }
-  try { await API.put('/settings', { slack_webhook }); toast('Slack configured!','success'); pgIntegrations(); }
-  catch(err) { mErr('slackErr', err.message); }
-}
-async function clearSlack() {
-  await API.put('/settings', { slack_webhook:'' });
-  toast('Slack removed.','info'); pgIntegrations();
-}
-async function testSlack() {
-  try { await API.post('/settings/test-slack',{}); toast('Test message sent to Slack!','success'); }
-  catch(err) { toast(err.message,'error'); }
 }
 
 // WhatsApp helpers
@@ -1527,15 +1802,22 @@ async function saveWhatsApp() {
   const twilio_token = document.getElementById('waToken').value.trim();
   const twilio_from  = document.getElementById('waFrom').value.trim();
   const twilio_to    = document.getElementById('waTo').value.trim();
-  if (!twilio_sid||!twilio_from||!twilio_to) { mErr('waErr','SID, From and To required.'); return; }
+  if (!twilio_sid||!twilio_from||!twilio_to) { mErr('waErr','Account SID, From and To are required.'); return; }
   const payload = { twilio_sid, twilio_from, twilio_to };
-  if (twilio_token !== '••••••••') payload.twilio_token = twilio_token;
-  try { await API.put('/settings', payload); toast('WhatsApp configured!','success'); pgIntegrations(); }
+  if (twilio_token && twilio_token !== '••••••••') payload.twilio_token = twilio_token;
+  try { await API.put('/settings', payload); toast('✅ WhatsApp notifications activated!','success'); pgIntegrations(); }
   catch(err) { mErr('waErr', err.message); }
 }
 async function clearWhatsApp() {
+  if (!confirm('Remove WhatsApp configuration?')) return;
   await API.put('/settings', { twilio_sid:'', twilio_token:'', twilio_from:'', twilio_to:'' });
-  toast('WhatsApp removed.','info'); pgIntegrations();
+  toast('WhatsApp config removed.','info'); pgIntegrations();
+}
+async function testWhatsApp() {
+  try {
+    await API.post('/settings/test-whatsapp', {});
+    toast('✅ Test WhatsApp message sent!','success');
+  } catch(err) { toast('WhatsApp test failed: ' + err.message,'error'); }
 }
 
 

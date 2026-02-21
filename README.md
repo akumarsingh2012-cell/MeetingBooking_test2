@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 🏢 Meeting Room Booking — Backend
 
 A production-ready Node.js + Express REST API with SQLite database.
@@ -230,6 +229,3 @@ After deploying, go to **Email Settings** in the app sidebar:
 | Charts | Chart.js |
 | Excel | SheetJS (xlsx) |
 | Email | EmailJS |
-=======
-# MeetingBooking_test2
->>>>>>> 025c439680807ebc9bc8e72eb07bb42de97d50e6

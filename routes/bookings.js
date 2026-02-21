@@ -31,14 +31,20 @@ function validate({ room_id, date, start_time, end_time, persons, exclude_id }) 
   if (em - sm > room.max_dur) return `Exceeds max ${room.max_dur / 60}h for this room.`;
   if (persons && +persons > room.capacity) return `Exceeds room capacity (${room.capacity}).`;
 
-  let conflictQ = `SELECT start_time, end_time FROM bookings WHERE room_id = ? AND date = ? AND status = 'approved'`;
+  // Check against ALL approved bookings (hard block)
+  let conflictQ = `
+    SELECT b.start_time, b.end_time, u.name as user_name
+    FROM bookings b
+    JOIN users u ON u.id = b.user_id
+    WHERE b.room_id = ? AND b.date = ? AND b.status = 'approved'
+  `;
   const params = [room_id, date];
-  if (exclude_id) { conflictQ += ' AND id != ?'; params.push(exclude_id); }
+  if (exclude_id) { conflictQ += ' AND b.id != ?'; params.push(exclude_id); }
 
   const existing = db.prepare(conflictQ).all(...params);
   for (const b of existing) {
     if (sm < t2m(b.end_time) && em > t2m(b.start_time)) {
-      return `Conflicts with an approved booking (${b.start_time}–${b.end_time}).`;
+      return `Time slot already booked (${b.start_time}–${b.end_time}) by ${b.user_name}. Please choose a different slot.`;
     }
   }
   return null;
@@ -95,6 +101,39 @@ router.get('/', auth, (req, res) => {
 router.get('/pending-count', auth, adminOnly, (req, res) => {
   const row = db.prepare("SELECT COUNT(*) as c FROM bookings WHERE status = 'pending'").get();
   res.json({ count: row.c });
+});
+
+// ─── GET /api/bookings/calendar ────────────────────────────────────────────
+// Returns ALL non-cancelled bookings across all users for calendar display.
+// Visible to every authenticated user so they can see occupied slots.
+// Sensitive info (email) is hidden for non-admins; purpose is shown (needed for UX).
+router.get('/calendar', auth, (req, res) => {
+  const { month, year } = req.query; // optional: ?year=2025&month=6 (1-based)
+  let sql = `
+    SELECT b.id, b.date, b.start_time, b.end_time, b.meeting_type, b.purpose,
+           b.status, b.recurring_group, b.food, b.veg_nonveg, b.user_id,
+           u.name as user_name,
+           r.id as room_id, r.name as room_name, r.color as room_color, r.floor as room_floor
+    FROM bookings b
+    JOIN users u ON u.id = b.user_id
+    JOIN rooms r ON r.id = b.room_id
+    WHERE b.status NOT IN ('cancelled','rejected')
+  `;
+  const params = [];
+  if (year && month) {
+    const ym = `${year}-${String(month).padStart(2,'0')}`;
+    sql += ` AND b.date LIKE ?`;
+    params.push(ym + '%');
+  }
+  sql += ' ORDER BY b.date ASC, b.start_time ASC';
+  const rows = db.prepare(sql).all(...params).map(b => ({
+    ...b,
+    food: !!b.food,
+    is_mine: b.user_id === req.user.id,
+    // Hide email from non-admins but keep user name
+    user_email: req.user.role === 'admin' ? (db.prepare('SELECT email FROM users WHERE id=?').get(b.user_id)||{}).email : undefined,
+  }));
+  res.json(rows);
 });
 
 // ─── GET /api/bookings/:id ─────────────────────────────────────────────────
@@ -183,9 +222,12 @@ router.post('/', auth, async (req, res) => {
   `).get(firstId);
 
   // Send emails + Slack + WhatsApp asynchronously (don't block response)
-if (emailSvc && emailSvc.sendNewBookingAdmin) {
-  emailSvc.sendNewBookingAdmin(formatBooking(booking));
+ try {
+  await emailSvc.sendNewBookingAdmin(formatBooking(booking));
+} catch (err) {
+  console.log("Email failed:", err.message);
 }
+
   notify.slackNewBooking(formatBooking(booking)).catch(() => {});
   notify.waNewBooking(formatBooking(booking)).catch(() => {});
   if (status === 'approved') {
