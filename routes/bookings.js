@@ -222,12 +222,11 @@ router.post('/', auth, async (req, res) => {
   `).get(firstId);
 
   // Send emails + Slack + WhatsApp asynchronously (don't block response)
- try {
+try {
   await emailSvc.sendNewBookingAdmin(formatBooking(booking));
 } catch (err) {
   console.log("Email failed:", err.message);
 }
-
   notify.slackNewBooking(formatBooking(booking)).catch(() => {});
   notify.waNewBooking(formatBooking(booking)).catch(() => {});
   if (status === 'approved') {
