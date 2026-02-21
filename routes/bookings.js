@@ -183,7 +183,9 @@ router.post('/', auth, async (req, res) => {
   `).get(firstId);
 
   // Send emails + Slack + WhatsApp asynchronously (don't block response)
-  emailSvc.sendNewBookingAdmin(formatBooking(booking)).catch(() => {});
+if (emailSvc && emailSvc.sendNewBookingAdmin) {
+  emailSvc.sendNewBookingAdmin(formatBooking(booking));
+}
   notify.slackNewBooking(formatBooking(booking)).catch(() => {});
   notify.waNewBooking(formatBooking(booking)).catch(() => {});
   if (status === 'approved') {
