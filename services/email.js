@@ -14,11 +14,11 @@ function logEmail(bookingId, recipient, subject, type, status='sent', error='') 
 
 // These are called by routes to log that an email should be sent
 // The actual sending happens from the frontend via EmailJS
-function sendNewBookingAdmin(booking)  { logEmail(booking.id, 'admin', `New Booking – ${booking.room_name}`, 'new_booking'); }
-function sendApproved(booking)         { logEmail(booking.id, booking.user_email, `Approved – ${booking.room_name}`, 'approved'); }
-function sendRejected(booking)         { logEmail(booking.id, booking.user_email, `Rejected – ${booking.room_name}`, 'rejected'); }
-function sendCancelled(booking)        { logEmail(booking.id, booking.user_email, `Cancelled – ${booking.room_name}`, 'cancelled'); }
-function sendReminder(booking)         { logEmail(booking.id, booking.user_email, `Reminder – ${booking.room_name}`, 'reminder'); }
+function sendNewBookingAdmin(booking)  { logEmail(booking.id, 'admin', `New Booking – ${booking.room_name}`, 'new_booking'); return Promise.resolve(); }
+function sendApproved(booking)         { logEmail(booking.id, booking.user_email, `Approved – ${booking.room_name}`, 'approved'); return Promise.resolve(); }
+function sendRejected(booking)         { logEmail(booking.id, booking.user_email, `Rejected – ${booking.room_name}`, 'rejected'); return Promise.resolve(); }
+function sendCancelled(booking)        { logEmail(booking.id, booking.user_email, `Cancelled – ${booking.room_name}`, 'cancelled'); return Promise.resolve(); }
+function sendReminder(booking)         { logEmail(booking.id, booking.user_email, `Reminder – ${booking.room_name}`, 'reminder'); return Promise.resolve(); }
 function isConfigured()                { return false; } // EmailJS configured client-side
 
 module.exports = { sendNewBookingAdmin, sendApproved, sendRejected, sendCancelled, sendReminder, isConfigured };
